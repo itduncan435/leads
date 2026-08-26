@@ -1,0 +1,21 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+BECU,325081403,+13042105062,VALID,CLOSED,CD,US,WA,Tacoma,"1201 Pacific Ave, Tacoma, WA 98402",VALID,Denise,,Kelly,Denise Kelly
+BECU,325081403,+15415054294,VALID,ACTIVE,Checking,US,OR,Eugene,"100 E Broadway, Eugene, OR 97401",VALID,Joan,,Brooks,Joan Brooks
+BECU,325081403,+13854142097,VALID,INVALID,Savings,US,WA,Bellevue,"600 108th Ave NE, Bellevue, WA 98004",VALID,Jacqueline,,Cooper,Jacqueline Cooper
+BECU,325081403,+18325672890,VALID,INVALID,Business Checking,US,WA,Tacoma,"1201 Pacific Ave, Tacoma, WA 98402",VALID,Philip,,Howard,Philip Howard
+BECU,325081403,+17726298774,VALID,CLOSED,CD,US,WA,Seattle,"1001 4th Ave, Seattle, WA 98154",VALID,David,Lee,Williams,David Lee Williams
+BECU,325081403,+14346798525,VALID,ACTIVE,Checking,US,ID,Boise,"100 S Capitol Blvd, Boise, ID 83702",VALID,Sean,,Long,Sean Long
+BECU,325081403,+18048657769,VALID,CLOSED,Checking,US,ID,Boise,"100 S Capitol Blvd, Boise, ID 83702",VALID,Pamela,,Morris,Pamela Morris
+BECU,325081403,+16578488408,VALID,ACTIVE,CD,US,OR,Eugene,"100 E Broadway, Eugene, OR 97401",VALID,Hannah,,Hughes,Hannah Hughes
+BECU,325081403,+17638398088,VALID,ACTIVE,Money Market,US,OR,Portland,"100 SW Main St, Portland, OR 97204",VALID,Jacqueline,,Cooper,Jacqueline Cooper
+BECU,325081403,+16106835826,VALID,PENDING,Student Checking,US,OR,Eugene,"100 E Broadway, Eugene, OR 97401",VALID,Sean,,Cruz,Sean Cruz
+BECU,325081403,+16617438899,VALID,ACTIVE,CD,US,WA,Bellevue,"600 108th Ave NE, Bellevue, WA 98004",VALID,Michael,Daniel,Moore,Michael Daniel Moore
+BECU,325081403,+18547791049,VALID,CLOSED,Savings,US,WA,Spokane,"100 N Washington St, Spokane, WA 99201",VALID,Jacqueline,,Cooper,Jacqueline Cooper
+BECU,325081403,+17743333604,VALID,INVALID,Checking,US,ID,Boise,"100 S Capitol Blvd, Boise, ID 83702",VALID,Jacqueline,,Reyes,Jacqueline Reyes
+BECU,325081403,+16264735332,VALID,ACTIVE,Savings,US,WA,Spokane,"100 N Washington St, Spokane, WA 99201",VALID,Marilyn,,Reyes,Marilyn Reyes
+BECU,325081403,+19708551075,VALID,ACTIVE,Money Market,US,ID,Boise,"100 S Capitol Blvd, Boise, ID 83702",VALID,Alan,,Richardson,Alan Richardson
+BECU,325081403,+17249249744,VALID,ACTIVE,Student Checking,US,WA,Seattle,"1001 4th Ave, Seattle, WA 98154",VALID,Ralph,,Richardson,Ralph Richardson
+BECU,325081403,+18596144036,VALID,ACTIVE,Money Market,US,WA,Spokane,"100 N Washington St, Spokane, WA 99201",VALID,Lauren,,Wood,Lauren Wood
+BECU,325081403,+12763789662,VALID,ACTIVE,Checking,US,ID,Boise,"100 S Capitol Blvd, Boise, ID 83702",VALID,Dennis,,Brooks,Dennis Brooks
+BECU,325081403,+14028123649,VALID,ACTIVE,Savings,US,ID,Boise,"100 S Capitol Blvd, Boise, ID 83702",VALID,Martin,,Cooper,Martin Cooper
+BECU,325081403,+18256569172,VALID,ACTIVE,Business Checking,US,ID,Boise,"100 S Capitol Blvd, Boise, ID 83702",VALID,James,Kevin,Young,James Kevin Young

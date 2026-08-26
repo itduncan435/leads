@@ -1,0 +1,3 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+14054566701,VALID,INVALID,CD,US,MA,Boston,"200 Berkeley St, Boston, MA 02116",VALID,Abigail,,Richardson,Abigail Richardson
+JPMorgan Chase Bank,021000021,+13134738113,VALID,ACTIVE,Business Checking,US,MA,Boston,"200 Berkeley St, Boston, MA 02116",VALID,Matthew,,Jackson,Matthew Jackson

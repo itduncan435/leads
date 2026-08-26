@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,account_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+19147393919,VALID,ACTIVE,Money Market,US,MS,Jackson,"200 E Capitol St, Jackson, MS 39201",VALID,Arthur,,Kelly,Arthur Kelly
+JPMorgan Chase Bank,021000021,+18406245169,VALID,ACTIVE,Student Checking,US,MS,Jackson,"200 E Capitol St, Jackson, MS 39201",VALID,Diana,,Ward,Diana Ward
+JPMorgan Chase Bank,021000021,+14759872671,VALID,ACTIVE,Business Checking,US,MS,Jackson,"200 E Capitol St, Jackson, MS 39201",VALID,Sean,,Brooks,Sean Brooks
+JPMorgan Chase Bank,021000021,+19136886041,VALID,CLOSED,CD,US,MS,Jackson,"200 E Capitol St, Jackson, MS 39201",VALID,Laura,,Evans,Laura Evans
+JPMorgan Chase Bank,021000021,+15163402019,VALID,ACTIVE,Checking,US,MS,Jackson,"200 E Capitol St, Jackson, MS 39201",VALID,Diana,,Bell,Diana Bell

@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+18789141274,VALID,ACTIVE,Student Checking,US,TX,Dallas,"2200 Ross Ave, Dallas, TX 75201",VALID,Donald,,Wright,Donald Wright
+JPMorgan Chase Bank,021000021,+17852204309,VALID,ACTIVE,CD,US,TX,Dallas,"2200 Ross Ave, Dallas, TX 75201",VALID,Erin,,Hughes,Erin Hughes
+JPMorgan Chase Bank,021000021,+12833803889,VALID,ACTIVE,Money Market,US,TX,Dallas,"2200 Ross Ave, Dallas, TX 75201",VALID,Howard,,Howard,Howard Howard
+JPMorgan Chase Bank,021000021,+19807622503,VALID,INVALID,Student Checking,US,TX,Dallas,"2200 Ross Ave, Dallas, TX 75201",VALID,Terry,,Diaz,Terry Diaz
+JPMorgan Chase Bank,021000021,+16608946174,VALID,ACTIVE,Savings,US,TX,Dallas,"2200 Ross Ave, Dallas, TX 75201",VALID,Jeremy,,Rivera,Jeremy Rivera

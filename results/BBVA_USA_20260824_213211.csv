@@ -1,0 +1,11 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+BBVA USA,062001186,+15755659170,VALID,ACTIVE,Money Market,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Katherine,,Gomez,Katherine Gomez
+BBVA USA,062001186,+17632393355,VALID,ACTIVE,CD,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Ralph,,Long,Ralph Long
+BBVA USA,062001186,+15187355109,VALID,ACTIVE,CD,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Barbara,,Gonzalez,Barbara Gonzalez
+BBVA USA,062001186,+19372109200,VALID,ACTIVE,Money Market,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Jane,,Johnson,Jane Johnson
+BBVA USA,062001186,+17316373623,VALID,ACTIVE,Savings,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Teresa,,Wood,Teresa Wood
+BBVA USA,062001186,+12298016911,VALID,ACTIVE,Money Market,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Sean,,Cruz,Sean Cruz
+BBVA USA,062001186,+19809777390,VALID,ACTIVE,Student Checking,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Henry,,Myers,Henry Myers
+BBVA USA,062001186,+17306677066,VALID,ACTIVE,Business Checking,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Sandra,,Sanchez,Sandra Sanchez
+BBVA USA,062001186,+19847217841,VALID,ACTIVE,Business Checking,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Amanda,,Wilson,Amanda Wilson
+BBVA USA,062001186,+15184732984,VALID,ACTIVE,CD,US,CA,San Francisco,"100 Pine St, San Francisco, CA 94111",VALID,Joan,,Diaz,Joan Diaz

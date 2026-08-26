@@ -1,0 +1,1 @@
+figlet -f small | lolcat -p 1.2

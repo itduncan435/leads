@@ -1,0 +1,3 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Wells Fargo Bank,121042882,+14437517163,VALID,ACTIVE,Money Market,US,MN,Minneapolis,"600 Marquette Ave, Minneapolis, MN 55402",VALID,Raymond,,Kelly,Raymond Kelly
+Wells Fargo Bank,121042882,+14845021933,VALID,ACTIVE,Business Checking,US,MN,Minneapolis,"600 Marquette Ave, Minneapolis, MN 55402",VALID,Jerry,,Gray,Jerry Gray

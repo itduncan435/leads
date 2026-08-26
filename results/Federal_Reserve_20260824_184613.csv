@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,account_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+16813924845,VALID,ACTIVE,CD,US,TX,Houston,"600 Travis St, Houston, TX 77002",VALID,Nathan,,Hughes,Nathan Hughes
+JPMorgan Chase Bank,021000021,+19316647767,VALID,INVALID,Savings,US,TX,Houston,"600 Travis St, Houston, TX 77002",VALID,Amber,,Wood,Amber Wood
+JPMorgan Chase Bank,021000021,+19522613407,VALID,PENDING,Checking,US,TX,Houston,"600 Travis St, Houston, TX 77002",VALID,Laura,,Evans,Laura Evans
+JPMorgan Chase Bank,021000021,+15749226079,VALID,ACTIVE,Checking,US,TX,Houston,"600 Travis St, Houston, TX 77002",VALID,Emily,,Brown,Emily Brown
+JPMorgan Chase Bank,021000021,+18473827093,VALID,ACTIVE,Savings,US,TX,Houston,"600 Travis St, Houston, TX 77002",VALID,Victoria,,Diaz,Victoria Diaz

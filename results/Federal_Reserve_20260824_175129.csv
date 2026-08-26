@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,account_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+19348714087,VALID,ACTIVE,Money Market,US,GA,Atlanta,"500 W Peachtree St NW, Atlanta, GA 30308",VALID,Amber,,Gray,Amber Gray
+JPMorgan Chase Bank,021000021,+18454283581,VALID,CLOSED,Business Checking,US,GA,Atlanta,"500 W Peachtree St NW, Atlanta, GA 30308",VALID,Marilyn,,Reyes,Marilyn Reyes
+JPMorgan Chase Bank,021000021,+13277043866,VALID,ACTIVE,CD,US,GA,Atlanta,"500 W Peachtree St NW, Atlanta, GA 30308",VALID,David,Raymond,Lewis,David Raymond Lewis
+JPMorgan Chase Bank,021000021,+13458253922,VALID,ACTIVE,Savings,US,GA,Atlanta,"500 W Peachtree St NW, Atlanta, GA 30308",VALID,Randy,,Gomez,Randy Gomez
+JPMorgan Chase Bank,021000021,+15513566306,VALID,ACTIVE,Student Checking,US,GA,Atlanta,"500 W Peachtree St NW, Atlanta, GA 30308",VALID,Randy,,Cook,Randy Cook

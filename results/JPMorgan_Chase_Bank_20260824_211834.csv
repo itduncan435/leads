@@ -1,0 +1,3 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+13035609950,VALID,ACTIVE,Savings,US,OK,Oklahoma City,"200 N Broadway Ave, Oklahoma City, OK 73102",VALID,Lauren,,Ward,Lauren Ward
+JPMorgan Chase Bank,021000021,+15752994757,VALID,ACTIVE,Money Market,US,OK,Oklahoma City,"200 N Broadway Ave, Oklahoma City, OK 73102",VALID,Marilyn,,Myers,Marilyn Myers

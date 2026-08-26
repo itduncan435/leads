@@ -1,0 +1,4 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Traditional Bank USA,101000017,+17147945326,alexgarcia14_130@protonmail.com,VALID,ACTIVE,Checking,US,NY,New York,"100 Main Street, New York, NY 10005",VALID,Rachel,,Morgan,Rachel Morgan
+Traditional Bank USA,101000017,+15122537173,houses@mts.net,VALID,ACTIVE,Student Checking,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Heather,,Bennett,Heather Bennett
+Traditional Bank USA,101000017,+12132657641,jjoo1@jhmi.edu,VALID,CLOSED,Checking,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Victoria,,Reed,Victoria Reed

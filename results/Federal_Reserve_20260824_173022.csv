@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,account_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+15082175339,VALID,ACTIVE,Savings,US,CA,Los Angeles,"400 S Hope Plaza, Los Angeles, CA 90071",VALID,Keith,,Ward,Keith Ward
+JPMorgan Chase Bank,021000021,+19198249249,VALID,ACTIVE,Checking,US,CA,Los Angeles,"400 S Hope Plaza, Los Angeles, CA 90071",VALID,Jeremy,,James,Jeremy James
+JPMorgan Chase Bank,021000021,+14694916765,VALID,ACTIVE,CD,US,CA,Los Angeles,"400 S Hope Plaza, Los Angeles, CA 90071",VALID,Wendy,,Price,Wendy Price
+JPMorgan Chase Bank,021000021,+13045888975,VALID,INVALID,Savings,US,CA,Los Angeles,"400 S Hope Plaza, Los Angeles, CA 90071",VALID,John,Paul,Lewis,John Paul Lewis
+JPMorgan Chase Bank,021000021,+17439763378,VALID,INVALID,Money Market,US,CA,Los Angeles,"400 S Hope Plaza, Los Angeles, CA 90071",VALID,Harry,,Rivera,Harry Rivera

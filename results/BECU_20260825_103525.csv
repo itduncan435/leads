@@ -1,0 +1,11 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,customer_fullname
+BECU,325081403,+16043212778,ringsandcoffee@gmail.com,VALID,ACTIVE,Student Checking,US,WA,Bellevue,"600 108th Ave NE, Bellevue, WA 98004",VALID,Martin Cox
+BECU,325081403,+15193237999,info@vallonconsulting.com,VALID,ACTIVE,Checking,US,WA,Tacoma,"1201 Pacific Ave, Tacoma, WA 98402",VALID,Andrew Lee
+BECU,325081403,+12404311468,janebrown26@outlook.com,VALID,ACTIVE,Savings,US,WA,Bellevue,"600 108th Ave NE, Bellevue, WA 98004",VALID,Phillip Cooper
+BECU,325081403,+17043151557,Jhoanmanuelisalguez809@gmail.com,VALID,PENDING,Student Checking,US,OR,Portland,"100 SW Main St, Portland, OR 97204",VALID,Justin Peterson
+BECU,325081403,+19546969992,cmmeno@umich.edu,VALID,ACTIVE,CD,US,OR,Portland,"100 SW Main St, Portland, OR 97204",VALID,Lauren Gray
+BECU,325081403,+17605671403,americaluigi@yahoo.com,VALID,PENDING,Business Checking,US,OR,Eugene,"100 E Broadway, Eugene, OR 97401",VALID,Victoria Rivera
+BECU,325081403,+17742178394,ls102256@stuwk.com,VALID,ACTIVE,Money Market,US,OR,Portland,"100 SW Main St, Portland, OR 97204",VALID,Denise Reed
+BECU,325081403,+16628747885,emily.zieger@kw.com,VALID,ACTIVE,Business Checking,US,WA,Tacoma,"1201 Pacific Ave, Tacoma, WA 98402",VALID,Harry Rivera
+BECU,325081403,+18238108462,info@snddm.com,VALID,ACTIVE,Savings,US,OR,Portland,"100 SW Main St, Portland, OR 97204",VALID,Jane Johnson
+BECU,325081403,+18168357002,info@KanataChiropractor.com,VALID,ACTIVE,Savings,US,WA,Spokane,"100 N Washington St, Spokane, WA 99201",VALID,Lori Wood

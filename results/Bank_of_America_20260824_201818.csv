@@ -1,0 +1,4 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Bank of America,026009593,+15615423374,VALID,ACTIVE,Savings,US,CA,Los Angeles,"555 S Flower St, Los Angeles, CA 90071",VALID,Bobby,,Rogers,Bobby Rogers
+Bank of America,026009593,+17407207259,VALID,ACTIVE,Savings,US,CA,Los Angeles,"555 S Flower St, Los Angeles, CA 90071",VALID,James,Edward,Davis,James Edward Davis
+Bank of America,026009593,+12289374871,VALID,ACTIVE,Checking,US,CA,Los Angeles,"555 S Flower St, Los Angeles, CA 90071",VALID,Donald,,Wright,Donald Wright

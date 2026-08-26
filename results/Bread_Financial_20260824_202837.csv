@@ -1,0 +1,101 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Bread Financial,031101266,+18594533328,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Tyler,,Reyes,Tyler Reyes
+Bread Financial,031101266,+19165866897,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Ernest,,Bailey,Ernest Bailey
+Bread Financial,031101266,+17547539003,VALID,INVALID,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Willie,,Cox,Willie Cox
+Bread Financial,031101266,+12298736087,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Hannah,,Foster,Hannah Foster
+Bread Financial,031101266,+12534225835,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Teresa,,Foster,Teresa Foster
+Bread Financial,031101266,+16676895491,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,James,Edward,Davis,James Edward Davis
+Bread Financial,031101266,+12562845701,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Andrew,,Lee,Andrew Lee
+Bread Financial,031101266,+19252516512,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Patrick,,Wood,Patrick Wood
+Bread Financial,031101266,+15034323016,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jonathan,,Nguyen,Jonathan Nguyen
+Bread Financial,031101266,+19499097130,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Lauren,,Wood,Lauren Wood
+Bread Financial,031101266,+15172044204,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Samantha,,Cook,Samantha Cook
+Bread Financial,031101266,+13094164744,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Eric,,Flores,Eric Flores
+Bread Financial,031101266,+15304292285,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Eugene,,Price,Eugene Price
+Bread Financial,031101266,+15749413883,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Andrea,,Peterson,Andrea Peterson
+Bread Financial,031101266,+14098181317,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jennifer,,Hernandez,Jennifer Hernandez
+Bread Financial,031101266,+16034786403,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Teresa,,Gray,Teresa Gray
+Bread Financial,031101266,+17187263903,VALID,CLOSED,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Robert,James,Clark,Robert James Clark
+Bread Financial,031101266,+17814123235,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Christopher,,Thomas,Christopher Thomas
+Bread Financial,031101266,+16623819667,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Robert,James,Clark,Robert James Clark
+Bread Financial,031101266,+16514924714,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Lynn,,Kelly,Lynn Kelly
+Bread Financial,031101266,+18593111324,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Amber,,Wood,Amber Wood
+Bread Financial,031101266,+15678174192,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Amber,,Bell,Amber Bell
+Bread Financial,031101266,+18056364664,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,George,,Campbell,George Campbell
+Bread Financial,031101266,+15629261798,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Marilyn,,Reyes,Marilyn Reyes
+Bread Financial,031101266,+14195111639,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Phillip,,Cox,Phillip Cox
+Bread Financial,031101266,+19794626182,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Amber,,Bell,Amber Bell
+Bread Financial,031101266,+19075245297,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Lynn,,Reyes,Lynn Reyes
+Bread Financial,031101266,+17786342721,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,John,Gary,Allen,John Gary Allen
+Bread Financial,031101266,+16577965091,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,James,,Miller,James Miller
+Bread Financial,031101266,+17548964829,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Joan,,Myers,Joan Myers
+Bread Financial,031101266,+17036869117,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Arthur,,Kelly,Arthur Kelly
+Bread Financial,031101266,+19079628190,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Wendy,,Price,Wendy Price
+Bread Financial,031101266,+18638965291,VALID,INVALID,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Sean,,Bennett,Sean Bennett
+Bread Financial,031101266,+16504367562,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,James,George,Jackson,James George Jackson
+Bread Financial,031101266,+15418629522,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Denise,,Kelly,Denise Kelly
+Bread Financial,031101266,+15088543964,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Samuel,,Bell,Samuel Bell
+Bread Financial,031101266,+18188824360,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Carl,,Bell,Carl Bell
+Bread Financial,031101266,+19374993565,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Russell,,Gomez,Russell Gomez
+Bread Financial,031101266,+14434731563,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Amanda,,Wilson,Amanda Wilson
+Bread Financial,031101266,+18326332222,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Christian,,Rivera,Christian Rivera
+Bread Financial,031101266,+13519363889,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Sean,,Rogers,Sean Rogers
+Bread Financial,031101266,+17785446453,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Andrea,,Peterson,Andrea Peterson
+Bread Financial,031101266,+12194704889,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,James,Kevin,Young,James Kevin Young
+Bread Financial,031101266,+18405794275,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jonathan,,Nguyen,Jonathan Nguyen
+Bread Financial,031101266,+15617347403,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Aaron,,Cruz,Aaron Cruz
+Bread Financial,031101266,+16124253207,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Ralph,,Richardson,Ralph Richardson
+Bread Financial,031101266,+17644457020,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Michael,Thomas,Anderson,Michael Thomas Anderson
+Bread Financial,031101266,+15033914973,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Victoria,,Rogers,Victoria Rogers
+Bread Financial,031101266,+15624299355,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Albert,,Gray,Albert Gray
+Bread Financial,031101266,+18628527786,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Paul,,Baker,Paul Baker
+Bread Financial,031101266,+16626405006,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Lauren,,Wood,Lauren Wood
+Bread Financial,031101266,+17727467230,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,David,Raymond,Lewis,David Raymond Lewis
+Bread Financial,031101266,+15635547669,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jean,,Bailey,Jean Bailey
+Bread Financial,031101266,+14104281854,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Lynn,,Reyes,Lynn Reyes
+Bread Financial,031101266,+17473064820,VALID,INVALID,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Hannah,,Foster,Hannah Foster
+Bread Financial,031101266,+18057284474,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Harry,,Rivera,Harry Rivera
+Bread Financial,031101266,+17182184141,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,John,Christopher,Young,John Christopher Young
+Bread Financial,031101266,+19345311773,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Andrew,,Lee,Andrew Lee
+Bread Financial,031101266,+16129158137,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Michael,,Williams,Michael Williams
+Bread Financial,031101266,+12133602711,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Diana,,Ward,Diana Ward
+Bread Financial,031101266,+13238144080,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Michael,Eric,Harris,Michael Eric Harris
+Bread Financial,031101266,+18436254537,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Arthur,,Kelly,Arthur Kelly
+Bread Financial,031101266,+18328114397,VALID,CLOSED,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,John,Richard,Wilson,John Richard Wilson
+Bread Financial,031101266,+12609754849,VALID,INVALID,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jennifer,,Hernandez,Jennifer Hernandez
+Bread Financial,031101266,+13305358677,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Michael,Frank,Clark,Michael Frank Clark
+Bread Financial,031101266,+12265314998,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Ashley,,King,Ashley King
+Bread Financial,031101266,+19599245221,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Teresa,,Gray,Teresa Gray
+Bread Financial,031101266,+19042689661,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Victoria,,Diaz,Victoria Diaz
+Bread Financial,031101266,+14633081567,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Paul,,Baker,Paul Baker
+Bread Financial,031101266,+19598415355,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Terry,,Diaz,Terry Diaz
+Bread Financial,031101266,+19077912961,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Hannah,,Gray,Hannah Gray
+Bread Financial,031101266,+16464674611,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Karen,,Clark,Karen Clark
+Bread Financial,031101266,+19139355222,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Elizabeth,,Martin,Elizabeth Martin
+Bread Financial,031101266,+19896538133,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jonathan,,Nguyen,Jonathan Nguyen
+Bread Financial,031101266,+12839684883,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Michael,Thomas,Anderson,Michael Thomas Anderson
+Bread Financial,031101266,+18166819964,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,John,Christopher,Young,John Christopher Young
+Bread Financial,031101266,+16082105145,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Diana,,Bell,Diana Bell
+Bread Financial,031101266,+18788563838,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Lynn,,Diaz,Lynn Diaz
+Bread Financial,031101266,+13017875606,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jerry,,Gray,Jerry Gray
+Bread Financial,031101266,+18702359829,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Steven,,Scott,Steven Scott
+Bread Financial,031101266,+17185563091,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Carolyn,,Howard,Carolyn Howard
+Bread Financial,031101266,+15408908901,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Victoria,,Reed,Victoria Reed
+Bread Financial,031101266,+15512382287,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,John,Edward,Moore,John Edward Moore
+Bread Financial,031101266,+15122024479,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Rachel,,Morgan,Rachel Morgan
+Bread Financial,031101266,+13603151393,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Lauren,,Hughes,Lauren Hughes
+Bread Financial,031101266,+18084464001,VALID,ACTIVE,Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,James,Joseph,Hall,James Joseph Hall
+Bread Financial,031101266,+13018587211,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Teresa,,Gray,Teresa Gray
+Bread Financial,031101266,+18015923913,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,James,,Miller,James Miller
+Bread Financial,031101266,+17436385806,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jessica,,Davis,Jessica Davis
+Bread Financial,031101266,+16624176100,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Harry,,Ward,Harry Ward
+Bread Financial,031101266,+16053712776,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jason,,Roberts,Jason Roberts
+Bread Financial,031101266,+18586303495,VALID,ACTIVE,Student Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Wendy,,Watson,Wendy Watson
+Bread Financial,031101266,+13606118659,VALID,ACTIVE,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Fiona,,Price,Fiona Price
+Bread Financial,031101266,+17154006246,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Hannah,,Gray,Hannah Gray
+Bread Financial,031101266,+19598368681,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Pamela,,Morris,Pamela Morris
+Bread Financial,031101266,+19092814828,VALID,INVALID,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Jacqueline,,Cooper,Jacqueline Cooper
+Bread Financial,031101266,+17043157507,VALID,CLOSED,CD,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Christian,,James,Christian James
+Bread Financial,031101266,+14173363987,VALID,ACTIVE,Business Checking,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Bobby,,Long,Bobby Long
+Bread Financial,031101266,+17747958496,VALID,ACTIVE,Money Market,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,Nicholas,,Edwards,Nicholas Edwards
+Bread Financial,031101266,+19108401241,VALID,ACTIVE,Savings,US,ID,Coeur d'Alene,"745 W Hanley Ave, Coeur d'Alene, ID 83815",VALID,John,,Smith,John Smith

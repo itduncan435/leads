@@ -1,0 +1,3 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Alliant Credit Union,021407912,+17135746683,VALID,ACTIVE,Checking,US,IL,Chicago,"11545 W Touhy Ave, Chicago, IL 60666",VALID,David,Paul,Thomas,David Paul Thomas
+Alliant Credit Union,021407912,+12123165598,VALID,ACTIVE,Savings,US,IL,Chicago,"11545 W Touhy Ave, Chicago, IL 60666",VALID,John,Paul,Lewis,John Paul Lewis

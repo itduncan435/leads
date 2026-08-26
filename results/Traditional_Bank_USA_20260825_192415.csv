@@ -1,0 +1,11 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,customer_fullname
+Traditional Bank USA,101000017,+17057341212,alohaortholehi@gmail.com,VALID,INVALID,Money Market,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,William James Brown
+Traditional Bank USA,101000017,+13057726782,janedavis62_167@yahoo.com,VALID,ACTIVE,CD,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Charlotte Price
+Traditional Bank USA,101000017,+13045911293,contact@jerseymortgage.com,VALID,ACTIVE,Savings,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Harry Bell
+Traditional Bank USA,101000017,+17655862437,lmacias@4dimedical.com,VALID,CLOSED,CD,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Philip Myers
+Traditional Bank USA,101000017,+17076729174,laithellabban@gmail.com,VALID,ACTIVE,Money Market,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Michael Daniel Moore
+Traditional Bank USA,101000017,+17706670099,chefbob@chefbobsblast.com,VALID,ACTIVE,CD,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Patrick Wood
+Traditional Bank USA,101000017,+15673033020,itspapchanel@gmail.com,VALID,ACTIVE,CD,US,NY,New York,"100 Main Street, New York, NY 10005",VALID,Alan Bennett
+Traditional Bank USA,101000017,+16077447891,crystal.robinson@metrobrokers.com,VALID,INVALID,Business Checking,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Jacqueline Reyes
+Traditional Bank USA,101000017,+14162750050,janebrown68@yahoo.com,VALID,ACTIVE,Money Market,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Joan Brooks
+Traditional Bank USA,101000017,+13159048379,j.banggamusic@gmail.com,VALID,ACTIVE,Student Checking,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Eugene Bell

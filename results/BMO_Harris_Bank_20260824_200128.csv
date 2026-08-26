@@ -1,0 +1,11 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+BMO Harris Bank,071000288,+18322019358,VALID,ACTIVE,CD,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,Melissa,,Mitchell,Melissa Mitchell
+BMO Harris Bank,071000288,+19854061668,VALID,ACTIVE,Savings,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,Sandra,,Sanchez,Sandra Sanchez
+BMO Harris Bank,071000288,+17409061131,VALID,ACTIVE,Savings,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,Michael,Thomas,Anderson,Michael Thomas Anderson
+BMO Harris Bank,071000288,+12145079125,VALID,ACTIVE,CD,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,Christian,,Rivera,Christian Rivera
+BMO Harris Bank,071000288,+13647727862,VALID,ACTIVE,Business Checking,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,Andrea,,Peterson,Andrea Peterson
+BMO Harris Bank,071000288,+16082157077,VALID,ACTIVE,Checking,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,Robert,James,Clark,Robert James Clark
+BMO Harris Bank,071000288,+18012335264,VALID,PENDING,Savings,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,Victoria,,Diaz,Victoria Diaz
+BMO Harris Bank,071000288,+13417157018,VALID,ACTIVE,Savings,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,David,Robert,Thomas,David Robert Thomas
+BMO Harris Bank,071000288,+19084634733,VALID,ACTIVE,Savings,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,Ernest,,Morgan,Ernest Morgan
+BMO Harris Bank,071000288,+17028692353,VALID,ACTIVE,Business Checking,US,MO,St. Louis,"100 N Broadway, St. Louis, MO 63102",VALID,David,Lee,Williams,David Lee Williams

@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Alliant Credit Union,021407912,+13192832877,VALID,ACTIVE,CD,US,IL,Chicago,"11545 W Touhy Ave, Chicago, IL 60666",VALID,John,Andrew,Jackson,John Andrew Jackson
+Alliant Credit Union,021407912,+18259697058,VALID,ACTIVE,Business Checking,US,IL,Chicago,"11545 W Touhy Ave, Chicago, IL 60666",VALID,James,George,Jackson,James George Jackson
+Alliant Credit Union,021407912,+12346522700,VALID,ACTIVE,Money Market,US,IL,Chicago,"11545 W Touhy Ave, Chicago, IL 60666",VALID,Victoria,,Rivera,Victoria Rivera
+Alliant Credit Union,021407912,+19017235656,VALID,ACTIVE,Business Checking,US,IL,Chicago,"11545 W Touhy Ave, Chicago, IL 60666",VALID,Diana,,Bell,Diana Bell
+Alliant Credit Union,021407912,+17545777275,VALID,ACTIVE,Savings,US,IL,Chicago,"11545 W Touhy Ave, Chicago, IL 60666",VALID,Joan,,Brooks,Joan Brooks

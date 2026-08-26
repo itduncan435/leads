@@ -1,0 +1,3 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Traditional Bank USA,101000017,+18786057594,jsmart023@gmail.com,VALID,ACTIVE,Business Checking,US,NY,New York,"100 Main Street, New York, NY 10005",VALID,James,Mark,Lewis,James Mark Lewis
+Traditional Bank USA,101000017,+12814657700,caryn@pathfinderplacement.com,VALID,ACTIVE,Checking,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Hannah,,Gray,Hannah Gray

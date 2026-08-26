@@ -1,0 +1,11 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Traditional Bank USA,101000017,+14137505250,compliance@lowcost-rx.com,VALID,ACTIVE,Savings,US,NY,New York,"100 Main Street, New York, NY 10005",VALID,Wendy,,James,Wendy James
+Traditional Bank USA,101000017,+17472746855,exumjoshua@icloud.com,VALID,ACTIVE,Business Checking,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Christine,,Cooper,Christine Cooper
+Traditional Bank USA,101000017,+15057813063,djcman04@gmail.com,VALID,ACTIVE,Student Checking,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Diana,,Bell,Diana Bell
+Traditional Bank USA,101000017,+18306098592,info@mundomedia.com,VALID,ACTIVE,CD,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Hannah,,Gray,Hannah Gray
+Traditional Bank USA,101000017,+17726787070,alexjohnson70.mailbox@protonmail.com,VALID,ACTIVE,Student Checking,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,John,Edward,Moore,John Edward Moore
+Traditional Bank USA,101000017,+13176001926,janemiller31@gmail.com,VALID,ACTIVE,Business Checking,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Ralph,,Long,Ralph Long
+Traditional Bank USA,101000017,+12166217896,info@thesomersethouse.com,VALID,ACTIVE,Savings,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Michael,Kevin,Walker,Michael Kevin Walker
+Traditional Bank USA,101000017,+12283140810,lily.choi@compass.com,VALID,ACTIVE,CD,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Eugene,,Bell,Eugene Bell
+Traditional Bank USA,101000017,+18643054835,deneen@bloomincolors.com,VALID,ACTIVE,Student Checking,US,NY,New York,"100 Main Street, New York, NY 10005",VALID,Randy,,Cook,Randy Cook
+Traditional Bank USA,101000017,+19852493372,sarahjones94.fast@protonmail.com,VALID,ACTIVE,CD,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Maria,,Richardson,Maria Richardson

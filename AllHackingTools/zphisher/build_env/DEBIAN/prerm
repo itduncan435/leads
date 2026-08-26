@@ -1,0 +1,3 @@
+#!/bin/bash
+rm -fr opt/zphisher
+exit 0

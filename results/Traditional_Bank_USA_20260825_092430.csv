@@ -1,0 +1,11 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,customer_fullname
+Traditional Bank USA,101000017,+19013821771,lisajones93.cloud@outlook.com,VALID,INVALID,Checking,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Annie Diaz
+Traditional Bank USA,101000017,+16613351655,robkj@cottageconcierge.net,VALID,ACTIVE,Money Market,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Jeremy Price
+Traditional Bank USA,101000017,+17348818564,manager.dm@humancareworldwide.com,VALID,ACTIVE,CD,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Maria Richardson
+Traditional Bank USA,101000017,+12104216319,id145@nova.edu,VALID,ACTIVE,Student Checking,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Bruce Bennett
+Traditional Bank USA,101000017,+15052353290,alkalinegourmet@yahoo.com,VALID,INVALID,CD,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Randy Cooper
+Traditional Bank USA,101000017,+12488454488,forest@dupageforest.org,VALID,ACTIVE,CD,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Erin Hughes
+Traditional Bank USA,101000017,+12176630764,rnavarro413@gmail.com,VALID,ACTIVE,Checking,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Michael Thomas Anderson
+Traditional Bank USA,101000017,+14705874877,lbru730@sulross.edu,VALID,ACTIVE,Savings,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Evelyn Long
+Traditional Bank USA,101000017,+17576948074,luke@ministryrecharge.com,VALID,ACTIVE,Student Checking,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Justin Peterson
+Traditional Bank USA,101000017,+12082201669,carriepaton63@gmail.com,VALID,ACTIVE,Savings,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Anthony White

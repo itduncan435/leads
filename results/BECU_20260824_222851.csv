@@ -1,0 +1,4 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+BECU,325081403,+16086697004,Kacuff316@yahoo.com,VALID,ACTIVE,CD,US,OR,Eugene,"100 E Broadway, Eugene, OR 97401",VALID,Joan,,Diaz,Joan Diaz
+BECU,325081403,+13058151750,lisadavis50@icloud.com,VALID,ACTIVE,CD,US,OR,Portland,"100 SW Main St, Portland, OR 97204",VALID,Maria,,Richardson,Maria Richardson
+BECU,325081403,+17867322367,lisamiller31_662@icloud.com,VALID,ACTIVE,Checking,US,OR,Eugene,"100 E Broadway, Eugene, OR 97401",VALID,Jonathan,,Nguyen,Jonathan Nguyen

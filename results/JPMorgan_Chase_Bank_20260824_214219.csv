@@ -1,0 +1,3 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+18163575487,VALID,ACTIVE,CD,US,CA,Los Angeles,"400 S Hope Plaza, Los Angeles, CA 90071",VALID,Abigail,,Richardson,Abigail Richardson
+JPMorgan Chase Bank,021000021,+13159377591,VALID,CLOSED,Student Checking,US,CA,Los Angeles,"400 S Hope Plaza, Los Angeles, CA 90071",VALID,James,Donald,Wilson,James Donald Wilson

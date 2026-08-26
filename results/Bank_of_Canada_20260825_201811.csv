@@ -1,0 +1,51 @@
+phone,institution,country,transit_status,inst_number,usa_routing_validation,account_type,account_status,account_state,account_city,branch_address,customer_fullname
++1 226 685 89426,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,CD,ACTIVE,LA,Chicago,"8181 Cedar St, Chicago, LA 85731",Sean Brooks
++1 226 032 03483,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,ACTIVE,ID,Chicago,"5784 Pine St, Chicago, ID 18553",Bruce Bennett
++1 647 970 20092,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,CD,PENDING,TX,Austin,"5469 Cedar St, Austin, TX 78571",Emily Hill
++1 365 499 64810,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Checking,PENDING,ND,Portland,"6437 Main St, Portland, ND 65246",Denise Diaz
++1 289 073 99194,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Savings,ACTIVE,WY,Los Angeles,"1210 Main St, Los Angeles, WY 30659",Robert James Clark
++1 437 867 11615,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Savings,ACTIVE,CT,Dallas,"117 Washington St, Dallas, CT 63037",John Richard Wilson
++1 647 047 87839,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Business Checking,ACTIVE,LA,Columbus,"4123 Washington St, Columbus, LA 32638",Diana Bell
++1 905 326 32709,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Business Checking,CLOSED,AR,New York,"7588 Elm St, New York, AR 65574",Jean Bailey
++1 416 099 95021,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,CD,ACTIVE,AZ,Chicago,"5906 Washington St, Chicago, AZ 62622",Marilyn Cook
++1 647 684 96375,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,ACTIVE,PA,Charlotte,"1971 Maple St, Charlotte, PA 32916",Olivia Rivera
++1 437 532 45820,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,ACTIVE,WY,Phoenix,"9435 Maple St, Phoenix, WY 89482",Albert Gray
++1 289 051 91271,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,ACTIVE,IL,Austin,"7445 Cedar St, Austin, IL 73293",Russell Cook
++1 647 786 63757,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,INVALID,MA,Chicago,"1150 Pine St, Chicago, MA 70795",Victoria Reed
++1 416 043 29490,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,PENDING,SC,San Antonio,"9226 Main St, San Antonio, SC 65198",Russell Myers
++1 342 896 20139,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Savings,CLOSED,WI,Seattle,"3594 Lake St, Seattle, WI 18925",Pamela Morris
++1 226 650 85945,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Savings,ACTIVE,TN,Austin,"4452 Cedar St, Austin, TN 27303",Teresa Foster
++1 548 764 39286,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Checking,CLOSED,WI,Dallas,"7365 Oak St, Dallas, WI 11286",Randy Gomez
++1 519 284 56708,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Money Market,ACTIVE,WI,Dallas,"8517 Elm St, Dallas, WI 84520",Phillip Watson
++1 437 834 37700,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,CLOSED,MS,Los Angeles,"2904 Cedar St, Los Angeles, MS 51811",Stephen Rivera
++1 365 854 02109,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Savings,ACTIVE,ND,Portland,"4664 Washington St, Portland, ND 58011",Lori Bell
++1 548 640 59103,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Checking,ACTIVE,SD,Chicago,"9449 Oak St, Chicago, SD 18750",Peter Cook
++1 289 723 01572,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Money Market,ACTIVE,SC,Los Angeles,"7076 Washington St, Los Angeles, SC 53802",Joe Long
++1 289 047 76724,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Savings,ACTIVE,CT,Jacksonville,"2648 Washington St, Jacksonville, CT 95530",Martin Cox
++1 342 652 95306,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,ACTIVE,FL,Columbus,"5781 Elm St, Columbus, FL 64921",Jessica Davis
++1 506 384 39919,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Business Checking,ACTIVE,OH,Nashville,"2132 Maple St, Nashville, OH 84339",John Kenneth Anderson
++1 226 637 56204,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Money Market,ACTIVE,OH,Houston,"4129 Elm St, Houston, OH 47336",Ernest Bailey
++1 437 596 62572,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Business Checking,ACTIVE,ME,Austin,"6625 Hill St, Austin, ME 36640",Dennis Brooks
++1 905 838 28089,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Business Checking,CLOSED,NM,Jacksonville,"4458 Cedar St, Jacksonville, NM 87636",Larry Rogers
++1 226 679 27418,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Checking,PENDING,MA,New York,"2822 Washington St, New York, MA 61861",Michael John Davis
++1 548 434 86048,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Savings,ACTIVE,SD,Columbus,"6837 Pine St, Columbus, SD 91061",John Smith
++1 905 942 18477,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,CD,ACTIVE,NY,San Antonio,"7509 Park St, San Antonio, NY 41144",Stephen Rivera
++1 342 591 01578,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,ACTIVE,KY,Houston,"1128 Cedar St, Houston, KY 15607",Rose Long
++1 647 245 28559,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Business Checking,ACTIVE,WV,New York,"9073 Main St, New York, WV 53524",Bobby Rogers
++1 437 134 77997,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,CD,ACTIVE,ID,Los Angeles,"2985 Park St, Los Angeles, ID 79387",Katherine Gomez
++1 365 643 87323,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Checking,ACTIVE,HI,San Antonio,"9096 Maple St, San Antonio, HI 32982",Gloria Gomez
++1 519 861 03488,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,CD,INVALID,MA,Indianapolis,"7935 Park St, Indianapolis, MA 50949",Joe Long
++1 437 768 56475,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Money Market,ACTIVE,MA,San Jose,"2915 Hill St, San Jose, MA 17958",Megan Rogers
++1 226 690 93956,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,CD,ACTIVE,NJ,San Francisco,"2782 Washington St, San Francisco, NJ 79553",Roger Howard
++1 519 454 10295,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Savings,ACTIVE,NE,Portland,"6899 Pine St, Portland, NE 71756",Russell Cooper
++1 519 546 25030,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Business Checking,CLOSED,KY,San Francisco,"9819 Elm St, San Francisco, KY 38828",Denise Reed
++1 289 039 25130,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Savings,ACTIVE,PA,Columbus,"3331 Pine St, Columbus, PA 57979",Christian James
++1 289 485 48257,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Savings,ACTIVE,CO,Houston,"1574 Oak St, Houston, CO 95490",Erin Bailey
++1 226 283 51669,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Money Market,ACTIVE,ID,Jacksonville,"4850 Elm St, Jacksonville, ID 75177",Charlotte Price
++1 289 476 78182,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Business Checking,ACTIVE,AL,Portland,"8002 Lake St, Portland, AL 93769",Michael Frank Clark
++1 342 648 08264,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Business Checking,ACTIVE,NM,New York,"4630 Maple St, New York, NM 74177",Michael Robert Allen
++1 506 422 28242,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Checking,INVALID,WY,Jacksonville,"5092 Maple St, Jacksonville, WY 40669",James Michael Moore
++1 437 057 61755,Toronto-Dominion Bank,CA,Invalid,004,NOT VALID - Not a US Bank Routing Number,Money Market,ACTIVE,NE,San Francisco,"6343 Pine St, San Francisco, NE 88203",Patrick Wood
++1 437 098 02658,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Checking,ACTIVE,MS,Chicago,"810 Pine St, Chicago, MS 98934",Zachary Cooper
++1 226 680 34452,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,CD,ACTIVE,OH,San Antonio,"7119 Elm St, San Antonio, OH 65789",Ernest Bailey
++1 226 424 16000,Toronto-Dominion Bank,CA,Valid,004,NOT VALID - Not a US Bank Routing Number,Student Checking,INVALID,MA,Dallas,"2493 Lake St, Dallas, MA 29866",Victoria Rogers

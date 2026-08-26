@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HACKER TERMINAL v3.3.3 - GUI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/futuristic.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <canvas id="matrix-canvas"></canvas>
+        <canvas id="pipes-canvas"></canvas>
+        <div class="particles" id="particles"></div>
+        <div class="grid-overlay"></div>
+    </div>
+    <div class="scanline"></div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">◈</span>
+                <div class="logo-text">
+                    <h1>HACKER TERMINAL</h1>
+                    <span class="version">v3.3.3 GUI EDITION</span>
+                </div>
+            </div>
+            <div class="header-info">
+                <div class="status-badge">
+                    <span class="pulse"></span>
+                    <span class="status-text">SYSTEM ONLINE</span>
+                </div>
+                <div class="clock" id="clock">00:00:00</div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <button class="nav-btn active" data-tab="dashboard">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Dashboard</span>
+            </button>
+            <button class="nav-btn" data-tab="generation">
+                <span class="nav-icon">🏦</span>
+                <span class="nav-text">Generation</span>
+            </button>
+            <button class="nav-btn" data-tab="security">
+                <span class="nav-icon">🛡️</span>
+                <span class="nav-text">Security</span>
+            </button>
+            <button class="nav-btn" data-tab="tools">
+                <span class="nav-icon">🔧</span>
+                <span class="nav-text">Tools</span>
+            </button>
+            <button class="nav-btn" data-tab="terminal">
+                <span class="nav-icon">💻</span>
+                <span class="nav-text">Terminal</span>
+            </button>
+            <button class="nav-btn" data-tab="settings">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">Settings</span>
+            </button>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <section class="tab-content active" id="tab-dashboard">
+                <div class="dashboard-grid">
+                    <!-- Stats Cards -->
+                    <div class="stat-card">
+                        <div class="stat-icon">🚀</div>
+                        <div class="stat-info">
+                            <h3>System Status</h3>
+                            <p class="stat-value" id="sys-status">ONLINE</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-info">
+                            <h3>CPU Usage</h3>
+                            <p class="stat-value" id="cpu-usage">--%</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💾</div>
+                        <div class="stat-info">
+                            <h3>Memory</h3>
+                            <p class="stat-value" id="mem-usage">--%</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔧</div>
+                        <div class="stat-info">
+                            <h3>Active Tools</h3>
+                            <p class="stat-value" id="active-tools">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="title-icon">⚡</span>
+                        QUICK ACTIONS
+                    </h2>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="runTool(1)">
+                            <span class="action-icon">🏦</span>
+                            <span>Generate Bank Data</span>
+                        </button>
+                        <button class="action-btn" onclick="runTool(2)">
+                            <span class="action-icon">📞</span>
+                            <span>Grab Numbers</span>
+                        </button>
+                        <button class="action-btn" onclick="runTool(38)">
+                            <span class="action-icon">💥</span>
+                            <span>AllHackingTools</span>
+                        </button>
+                        <button class="action-btn" onclick="runTool(39)">
+                            <span class="action-icon">🛡️</span>
+                            <span>SpyHunt Scanner</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Results -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="title-icon">📁</span>
+                        RECENT RESULTS
+                    </h2>
+                    <div class="results-list" id="results-list">
+                        <div class="loading">Loading results...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Generation Tab -->
+            <section class="tab-content" id="tab-generation">
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="title-icon">🏦</span>
+                        PENTESTING MODULES
+                    </h2>
+                    <div class="modules-grid" id="gen-modules">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Tab -->
+            <section class="tab-content" id="tab-security">
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="title-icon">🛡️</span>
+                        SECURITY TOOLS
+                    </h2>
+                    <div class="modules-grid" id="sec-modules">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tools Tab -->
+            <section class="tab-content" id="tab-tools">
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="title-icon">🔧</span>
+                        ALL TOOLS
+                    </h2>
+                    <div class="tools-container">
+                        <div class="tool-category">
+                            <h3>💥 AllHackingTools Suite</h3>
+                            <div class="tool-list" id="aht-tools"></div>
+                        </div>
+                        <div class="tool-category">
+                            <h3>🛡️ SpyHunt Scanner</h3>
+                            <div class="tool-list" id="spyhunt-tools"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Terminal Tab -->
+            <section class="tab-content" id="tab-terminal">
+                <div class="terminal-container">
+                    <video class="terminal-bg-video active" id="terminal-bg-video" muted loop playsinline preload="auto" autoplay>
+                        <source src="{{ url_for('static', filename='img/general.mp4') }}" type="video/mp4">
+                    </video>
+                    <video class="terminal-bg-video terminal-bg-video-special" id="terminal-bg-video-special" muted loop playsinline preload="auto" autoplay>
+                        <source src="{{ url_for('static', filename='img/guibackground.mp4') }}" type="video/mp4">
+                    </video>
+                    <div class="terminal-header">
+                        <div class="terminal-header-left">
+                            <div class="terminal-buttons">
+                                <span class="term-btn red"></span>
+                                <span class="term-btn yellow"></span>
+                                <span class="term-btn green"></span>
+                            </div>
+                            <canvas id="terminal-visualizer"></canvas>
+                            <div class="terminal-fastfetch" id="terminal-fastfetch">
+                                <span class="ff-key">CPU</span> <span class="ff-value" id="ff-cpu">--</span>
+                                <span class="ff-key">MEM</span> <span class="ff-value" id="ff-mem">--</span>
+                                <span class="ff-key">DISK</span> <span class="ff-value" id="ff-disk">--</span>
+                            </div>
+                        </div>
+                        <span class="terminal-title">TERMINAL OUTPUT</span>
+                        <div class="terminal-actions">
+                            <button class="term-action" onclick="clearTerminal()">Clear</button>
+                            <button class="term-action" onclick="stopCurrentProcess()">Stop</button>
+                        </div>
+                    </div>
+                    <div class="terminal-body" id="terminal-output">
+                        <div class="terminal-line info">Welcome to Hacker Terminal GUI v3.3.3</div>
+                        <div class="terminal-line info">Type a command or use tools from other tabs</div>
+                        <div class="terminal-line info">────────────────────────────────────────</div>
+                    </div>
+                    <div class="terminal-input-line">
+                        <span class="prompt">$</span>
+                        <input type="text" class="terminal-input" id="cmd-input" placeholder="Enter command..." autocomplete="off">
+                        <button class="run-btn" onclick="runCommand()">▶</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section class="tab-content" id="tab-settings">
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="title-icon">⚙️</span>
+                        SETTINGS
+                    </h2>
+                    <div class="settings-grid">
+                        <div class="setting-card">
+                            <h3>🎨 Theme</h3>
+                            <div class="theme-options">
+                                <button class="theme-btn active" data-theme="cyber">Cyber Cyan</button>
+                                <button class="theme-btn" data-theme="neon">Neon Green</button>
+                                <button class="theme-btn" data-theme="purple">Purple Haze</button>
+                                <button class="theme-btn" data-theme="red">Red Alert</button>
+                            </div>
+                        </div>
+                        <div class="setting-card">
+                            <h3>📂 Results Directory</h3>
+                            <p class="setting-value">/home/xmavel/Documents/bank/results</p>
+                        </div>
+                        <div class="setting-card">
+                            <h3>🔗 API Endpoints</h3>
+                            <p class="setting-value">http://localhost:5000</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-info">
+                <span>📢 Telegram: @allsafeotpbot</span>
+                <span>👤 Coder: DuncPrice</span>
+                <span>📺 Channel: xmavelxrisky</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bank Selection Modal -->
+    <div class="modal" id="bank-modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 id="bank-modal-title">Select Bank</h3>
+                <button class="modal-close" onclick="closeBankModal()">×</button>
+            </div>
+            <div class="modal-body" id="bank-modal-body">
+                <div class="bank-selection">
+                    <!-- Step 1: Bank List -->
+                    <div class="bank-step" id="bank-list-step">
+                        <label>Select a Bank:</label>
+                        <div id="bank-list" class="bank-list-grid"></div>
+                    </div>
+                    
+                    <!-- Step 2: Branch Selection -->
+                    <div class="bank-step" id="branch-selection-step" style="display: none;">
+                        <label>Branches for <span id="selected-bank-name"></span>:</label>
+                        <div class="branch-actions">
+                            <button class="btn btn-secondary" onclick="selectAllBranches()">All Branches</button>
+                            <button class="btn btn-primary" onclick="selectRandomBranch()">Random Branch</button>
+                            <button class="btn btn-secondary" onclick="selectMixBranches()" style="border-color: var(--accent-magenta); color: var(--accent-magenta);">Mix Branches</button>
+                        </div>
+                        <div class="state-selection" style="margin-bottom: 12px;">
+                            <label>State:</label>
+                            <select id="state-select" class="terminal-input" style="width: 200px; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid #0ff; color: #0ff; font-family: 'Share Tech Mono', monospace; border-radius: 4px;">
+                                <option value="">All States</option>
+                            </select>
+                        </div>
+                        <div id="branch-list" class="branch-list"></div>
+                        <div class="count-selection" style="margin-top: 15px;">
+                            <label>Number of Leads:</label>
+                            <input type="number" id="lead-count" min="1" max="1000" value="10" class="terminal-input" style="width: 100px; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid #0ff; color: #0ff; font-family: 'Share Tech Mono', monospace; border-radius: 4px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBankModal()">Cancel</button>
+                <button class="btn btn-primary" id="bank-generate-btn" onclick="runSelectedBankTool()" disabled>Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tool Output Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Tool Output</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="terminal-output" id="modal-terminal"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <button class="btn btn-primary" onclick="downloadResults()">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}?v=335"></script>
+</body>
+</html>

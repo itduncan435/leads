@@ -1,0 +1,11 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,customer_fullname
+Traditional Bank USA,101000017,+12513638148,sarahwilliams87.secure@hotmail.com,VALID,INVALID,Student Checking,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Ralph Long
+Traditional Bank USA,101000017,+17859611779,hrm@skynetjoe.com,VALID,ACTIVE,Checking,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Joan Diaz
+Traditional Bank USA,101000017,+19809254101,vamsi_s5@hotmail.com,VALID,CLOSED,Money Market,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Gary Parker
+Traditional Bank USA,101000017,+13059244999,sarahbrown52.post@yahoo.com,VALID,ACTIVE,Student Checking,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Alan Bailey
+Traditional Bank USA,101000017,+19787784529,kencay118@gmail.com,VALID,ACTIVE,Business Checking,US,NY,New York,"100 Main Street, New York, NY 10005",VALID,Judy Cruz
+Traditional Bank USA,101000017,+17739862091,maette7g9n@2daytrends.com,VALID,CLOSED,Business Checking,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Annie Reed
+Traditional Bank USA,101000017,+15597967484,emmawilliams31_355@gmail.com,VALID,ACTIVE,Student Checking,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Jeremy James
+Traditional Bank USA,101000017,+14805082005,backhusethan@gmail.com,VALID,ACTIVE,Money Market,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Ryan Phillips
+Traditional Bank USA,101000017,+14257881573,cnmanning1@crimson.ua.edu,VALID,ACTIVE,Money Market,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Diana Peterson
+Traditional Bank USA,101000017,+15189937572,teamge@garethemery.com,VALID,ACTIVE,CD,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Eugene Peterson

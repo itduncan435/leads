@@ -1,0 +1,11 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,customer_fullname
+Traditional Bank USA,101000017,+18285524811,johndavis26_705@yahoo.com,VALID,INVALID,Checking,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Jacqueline Reyes
+Traditional Bank USA,101000017,+18607107364,mollyzahnsocial@gmail.com,VALID,ACTIVE,Checking,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Michael David Robinson
+Traditional Bank USA,101000017,+14129926369,lisajones64_144@yahoo.com,VALID,ACTIVE,CD,US,IL,Chicago,"300 Michigan Avenue, Chicago, IL 60601",VALID,Steven Scott
+Traditional Bank USA,101000017,+14242743479,mayziz@hotmail.com,VALID,ACTIVE,Business Checking,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Willie James
+Traditional Bank USA,101000017,+15612493857,meir@contextors.com,VALID,ACTIVE,CD,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,Philip Foster
+Traditional Bank USA,101000017,+12152604954,eyfq3j7u@wuamx.com,VALID,ACTIVE,Savings,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Maria Richardson
+Traditional Bank USA,101000017,+16786751902,shop@whispersboutique.com,VALID,ACTIVE,Savings,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Jacqueline Myers
+Traditional Bank USA,101000017,+16202285119,gsomarriba@psms-cpa.com,VALID,ACTIVE,Business Checking,US,CA,Los Angeles,"200 Wilshire Boulevard, Los Angeles, CA 90012",VALID,Martin Gomez
+Traditional Bank USA,101000017,+13217509787,mikedavis77@outlook.com,VALID,ACTIVE,Savings,US,NY,New York,"100 Main Street, New York, NY 10005",VALID,Rebecca Carter
+Traditional Bank USA,101000017,+13474528979,antoine.taylor855@gmail.com,VALID,ACTIVE,Money Market,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,John David Anderson

@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,account_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+15613248618,VALID,ACTIVE,CD,US,LA,New Orleans,"200 St Charles Ave, New Orleans, LA 70130",VALID,Jennifer,,Hernandez,Jennifer Hernandez
+JPMorgan Chase Bank,021000021,+18637952183,VALID,ACTIVE,Money Market,US,LA,New Orleans,"200 St Charles Ave, New Orleans, LA 70130",VALID,Jeremy,,Price,Jeremy Price
+JPMorgan Chase Bank,021000021,+17734958367,VALID,ACTIVE,Checking,US,LA,New Orleans,"200 St Charles Ave, New Orleans, LA 70130",VALID,Phillip,,Cooper,Phillip Cooper
+JPMorgan Chase Bank,021000021,+18783979416,VALID,ACTIVE,Money Market,US,LA,New Orleans,"200 St Charles Ave, New Orleans, LA 70130",VALID,Eugene,,Bell,Eugene Bell
+JPMorgan Chase Bank,021000021,+15135363239,VALID,ACTIVE,Checking,US,LA,New Orleans,"200 St Charles Ave, New Orleans, LA 70130",VALID,Ryan,,Phillips,Ryan Phillips

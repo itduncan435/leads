@@ -1,0 +1,3 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Wells Fargo Bank,121042882,+12167786405,VALID,ACTIVE,Business Checking,US,GA,Atlanta,"171 17th St NW, Atlanta, GA 30363",VALID,Terry,,Diaz,Terry Diaz
+Wells Fargo Bank,121042882,+14649687174,VALID,ACTIVE,Checking,US,GA,Atlanta,"171 17th St NW, Atlanta, GA 30363",VALID,Bobby,,Reed,Bobby Reed

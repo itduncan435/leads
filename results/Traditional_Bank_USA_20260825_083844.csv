@@ -1,0 +1,3 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Traditional Bank USA,101000017,+14034000879,chrismiller18_163@icloud.com,VALID,ACTIVE,Student Checking,US,TX,Houston,"400 Texas Avenue, Houston, TX 77002",VALID,John,David,Anderson,John David Anderson
+Traditional Bank USA,101000017,+17577610135,alexbrown54.mail@icloud.com,VALID,ACTIVE,Student Checking,US,FL,Miami,"500 Brickell Avenue, Miami, FL 33131",VALID,Randy,,Foster,Randy Foster

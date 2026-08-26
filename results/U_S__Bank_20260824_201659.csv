@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+U.S. Bank,123000220,+17182313594,VALID,CLOSED,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Eugene,,Reyes,Eugene Reyes
+U.S. Bank,123000220,+15034093230,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Randy,,Gomez,Randy Gomez
+U.S. Bank,123000220,+18304827946,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,James,Edward,Davis,James Edward Davis
+U.S. Bank,123000220,+13513277891,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Bruce,,Bennett,Bruce Bennett
+U.S. Bank,123000220,+12258746428,VALID,PENDING,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Michael,Kevin,Walker,Michael Kevin Walker

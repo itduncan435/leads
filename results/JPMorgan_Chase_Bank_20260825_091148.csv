@@ -1,0 +1,2 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,customer_fullname
+JPMorgan Chase Bank,021000021,+14694079754,jovillalobos04@gmail.com,VALID,ACTIVE,CD,US,IL,Chicago,"10 S Dearborn St, Chicago, IL 60603",VALID,Maria Robinson

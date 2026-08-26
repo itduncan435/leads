@@ -1,0 +1,4 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+13473656019,VALID,ACTIVE,Business Checking,US,CA,San Francisco,"101 California St, San Francisco, CA 94111",VALID,Kimberly,,Adams,Kimberly Adams
+JPMorgan Chase Bank,021000021,+14095299769,VALID,ACTIVE,CD,US,CA,San Francisco,"101 California St, San Francisco, CA 94111",VALID,Willie,,James,Willie James
+JPMorgan Chase Bank,021000021,+17306994345,VALID,ACTIVE,Student Checking,US,CA,San Francisco,"101 California St, San Francisco, CA 94111",VALID,Michael,,Williams,Michael Williams

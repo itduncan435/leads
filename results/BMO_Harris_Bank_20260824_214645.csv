@@ -1,0 +1,101 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+BMO Harris Bank,071000288,+17607206274,VALID,CLOSED,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Matthew,,Jackson,Matthew Jackson
+BMO Harris Bank,071000288,+17126202796,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Teresa,,Foster,Teresa Foster
+BMO Harris Bank,071000288,+17729325413,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,John,Gary,Allen,John Gary Allen
+BMO Harris Bank,071000288,+19253766887,VALID,INVALID,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Alexander,,Diaz,Alexander Diaz
+BMO Harris Bank,071000288,+12157148887,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Roger,,Howard,Roger Howard
+BMO Harris Bank,071000288,+18034935360,VALID,PENDING,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Lauren,,Hughes,Lauren Hughes
+BMO Harris Bank,071000288,+12129476760,VALID,INVALID,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,David,Raymond,Lewis,David Raymond Lewis
+BMO Harris Bank,071000288,+15056655814,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Eugene,,Bell,Eugene Bell
+BMO Harris Bank,071000288,+19294113012,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,David,,Jones,David Jones
+BMO Harris Bank,071000288,+18057477863,VALID,CLOSED,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Michael,David,Robinson,Michael David Robinson
+BMO Harris Bank,071000288,+18508543738,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,James,Joseph,Hall,James Joseph Hall
+BMO Harris Bank,071000288,+13135724865,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,David,Steven,Davis,David Steven Davis
+BMO Harris Bank,071000288,+14477342620,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Kevin,,Nelson,Kevin Nelson
+BMO Harris Bank,071000288,+14247537831,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Roger,,Howard,Roger Howard
+BMO Harris Bank,071000288,+16206276274,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Nancy,,Perez,Nancy Perez
+BMO Harris Bank,071000288,+14158991358,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,James,Mark,Lewis,James Mark Lewis
+BMO Harris Bank,071000288,+13147191423,VALID,INVALID,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Carolyn,,Howard,Carolyn Howard
+BMO Harris Bank,071000288,+15127013573,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Carl,,Bell,Carl Bell
+BMO Harris Bank,071000288,+14795467415,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Wendy,,Cox,Wendy Cox
+BMO Harris Bank,071000288,+19293498591,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,James,Joseph,Hall,James Joseph Hall
+BMO Harris Bank,071000288,+15857818020,VALID,CLOSED,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Raymond,,Kelly,Raymond Kelly
+BMO Harris Bank,071000288,+19797469247,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Teresa,,Hughes,Teresa Hughes
+BMO Harris Bank,071000288,+16124173312,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Bobby,,Kelly,Bobby Kelly
+BMO Harris Bank,071000288,+17407234821,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Aaron,,Cruz,Aaron Cruz
+BMO Harris Bank,071000288,+14427489573,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Lauren,,Gray,Lauren Gray
+BMO Harris Bank,071000288,+16365046645,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Amanda,,Wilson,Amanda Wilson
+BMO Harris Bank,071000288,+13042084185,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Victoria,,Rogers,Victoria Rogers
+BMO Harris Bank,071000288,+19725817781,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Phillip,,Watson,Phillip Watson
+BMO Harris Bank,071000288,+16696304079,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Teresa,,Gray,Teresa Gray
+BMO Harris Bank,071000288,+19349204802,VALID,INVALID,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Denise,,Reed,Denise Reed
+BMO Harris Bank,071000288,+17309194376,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Phillip,,Cox,Phillip Cox
+BMO Harris Bank,071000288,+13644448160,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Barbara,,Gonzalez,Barbara Gonzalez
+BMO Harris Bank,071000288,+13049461164,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Raymond,,Kelly,Raymond Kelly
+BMO Harris Bank,071000288,+19756162540,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Anthony,,White,Anthony White
+BMO Harris Bank,071000288,+18432631184,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Katherine,,Gomez,Katherine Gomez
+BMO Harris Bank,071000288,+12408754086,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Sandra,,Sanchez,Sandra Sanchez
+BMO Harris Bank,071000288,+15064381184,VALID,PENDING,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Fiona,,Price,Fiona Price
+BMO Harris Bank,071000288,+17698598998,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Victoria,,Kelly,Victoria Kelly
+BMO Harris Bank,071000288,+17793537901,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Annie,,Kelly,Annie Kelly
+BMO Harris Bank,071000288,+16413966725,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Eric,,Flores,Eric Flores
+BMO Harris Bank,071000288,+13084924237,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Matthew,,Jackson,Matthew Jackson
+BMO Harris Bank,071000288,+12706001160,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Teresa,,Hughes,Teresa Hughes
+BMO Harris Bank,071000288,+12158795518,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Heather,,Bennett,Heather Bennett
+BMO Harris Bank,071000288,+14143261691,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Judy,,Cruz,Judy Cruz
+BMO Harris Bank,071000288,+16827219453,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Jerry,,Gray,Jerry Gray
+BMO Harris Bank,071000288,+12562786262,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Hannah,,Foster,Hannah Foster
+BMO Harris Bank,071000288,+18595168210,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Pamela,,Morris,Pamela Morris
+BMO Harris Bank,071000288,+13376358984,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Amanda,,Wilson,Amanda Wilson
+BMO Harris Bank,071000288,+12175177294,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Victoria,,Rogers,Victoria Rogers
+BMO Harris Bank,071000288,+17073352800,VALID,INVALID,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Randy,,Foster,Randy Foster
+BMO Harris Bank,071000288,+17127295303,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Ralph,,Long,Ralph Long
+BMO Harris Bank,071000288,+17788773433,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Abigail,,Richardson,Abigail Richardson
+BMO Harris Bank,071000288,+15417559004,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Alan,,Bennett,Alan Bennett
+BMO Harris Bank,071000288,+12545134582,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Bobby,,Kelly,Bobby Kelly
+BMO Harris Bank,071000288,+15707312249,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Joe,,Long,Joe Long
+BMO Harris Bank,071000288,+12627271116,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Joe,,Long,Joe Long
+BMO Harris Bank,071000288,+14022684035,VALID,INVALID,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Denise,,Reed,Denise Reed
+BMO Harris Bank,071000288,+13303879781,VALID,INVALID,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Kimberly,,Adams,Kimberly Adams
+BMO Harris Bank,071000288,+15052966272,VALID,PENDING,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Brandon,,Reed,Brandon Reed
+BMO Harris Bank,071000288,+13053067868,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Jeremy,,Price,Jeremy Price
+BMO Harris Bank,071000288,+13164876473,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Charlotte,,Price,Charlotte Price
+BMO Harris Bank,071000288,+17209904359,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Teresa,,Foster,Teresa Foster
+BMO Harris Bank,071000288,+19342198438,VALID,PENDING,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Lori,,Peterson,Lori Peterson
+BMO Harris Bank,071000288,+19149928300,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Teresa,,Wood,Teresa Wood
+BMO Harris Bank,071000288,+14235972338,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,John,,Smith,John Smith
+BMO Harris Bank,071000288,+18573296575,VALID,PENDING,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Erin,,James,Erin James
+BMO Harris Bank,071000288,+18637042136,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Phillip,,Gomez,Phillip Gomez
+BMO Harris Bank,071000288,+15172174036,VALID,CLOSED,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Steven,,Scott,Steven Scott
+BMO Harris Bank,071000288,+16698047131,VALID,PENDING,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Zachary,,Cooper,Zachary Cooper
+BMO Harris Bank,071000288,+12148848072,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Adam,,Morgan,Adam Morgan
+BMO Harris Bank,071000288,+14237034531,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,James,Michael,Moore,James Michael Moore
+BMO Harris Bank,071000288,+13602872532,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Judy,,Cruz,Judy Cruz
+BMO Harris Bank,071000288,+18785695258,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Phillip,,Gomez,Phillip Gomez
+BMO Harris Bank,071000288,+12545276305,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Eric,,Flores,Eric Flores
+BMO Harris Bank,071000288,+18052519475,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Gloria,,Gomez,Gloria Gomez
+BMO Harris Bank,071000288,+19365941168,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Amber,,Bell,Amber Bell
+BMO Harris Bank,071000288,+18202423035,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Michael,Gary,Taylor,Michael Gary Taylor
+BMO Harris Bank,071000288,+17622012979,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Henry,,Myers,Henry Myers
+BMO Harris Bank,071000288,+18406915509,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Erin,,Bailey,Erin Bailey
+BMO Harris Bank,071000288,+13142787543,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Howard,,Bailey,Howard Bailey
+BMO Harris Bank,071000288,+19788844334,VALID,CLOSED,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Michael,Robert,Allen,Michael Robert Allen
+BMO Harris Bank,071000288,+15064684931,VALID,CLOSED,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Abigail,,Richardson,Abigail Richardson
+BMO Harris Bank,071000288,+15069426308,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Willie,,Cox,Willie Cox
+BMO Harris Bank,071000288,+12263357331,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Lynn,,Diaz,Lynn Diaz
+BMO Harris Bank,071000288,+17347099520,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Willie,,James,Willie James
+BMO Harris Bank,071000288,+19155703826,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Russell,,Hughes,Russell Hughes
+BMO Harris Bank,071000288,+17139131806,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Betty,,Young,Betty Young
+BMO Harris Bank,071000288,+18327261577,VALID,CLOSED,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Christian,,James,Christian James
+BMO Harris Bank,071000288,+13102521926,VALID,ACTIVE,Student Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Sarah,,Garcia,Sarah Garcia
+BMO Harris Bank,071000288,+12607772062,VALID,PENDING,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Nathan,,Hughes,Nathan Hughes
+BMO Harris Bank,071000288,+15014571247,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Eugene,,Price,Eugene Price
+BMO Harris Bank,071000288,+17036202849,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Kevin,,Nelson,Kevin Nelson
+BMO Harris Bank,071000288,+12725705418,VALID,PENDING,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Lynn,,Reyes,Lynn Reyes
+BMO Harris Bank,071000288,+17188261088,VALID,ACTIVE,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Patrick,,Wood,Patrick Wood
+BMO Harris Bank,071000288,+15804594544,VALID,ACTIVE,CD,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Philip,,Myers,Philip Myers
+BMO Harris Bank,071000288,+19852582056,VALID,INVALID,Money Market,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Anthony,,White,Anthony White
+BMO Harris Bank,071000288,+13183136777,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Jeremy,,James,Jeremy James
+BMO Harris Bank,071000288,+18036822560,VALID,ACTIVE,Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Tyler,,Reyes,Tyler Reyes
+BMO Harris Bank,071000288,+13368164954,VALID,ACTIVE,Business Checking,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,Lori,,Peterson,Lori Peterson
+BMO Harris Bank,071000288,+13213341819,VALID,ACTIVE,Savings,US,WI,Milwaukee,"777 E Wisconsin Ave, Milwaukee, WI 53202",VALID,William,,Anderson,William Anderson

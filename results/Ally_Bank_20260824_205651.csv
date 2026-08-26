@@ -1,0 +1,11 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Ally Bank,121000358,+19294738610,VALID,ACTIVE,Checking,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Teresa,,Wood,Teresa Wood
+Ally Bank,121000358,+17039975547,VALID,ACTIVE,Student Checking,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Kimberly,,Adams,Kimberly Adams
+Ally Bank,121000358,+13083104417,VALID,ACTIVE,CD,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Raymond,,Kelly,Raymond Kelly
+Ally Bank,121000358,+19548741597,VALID,ACTIVE,Savings,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Randy,,Foster,Randy Foster
+Ally Bank,121000358,+13047547393,VALID,ACTIVE,Student Checking,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Martin,,Cooper,Martin Cooper
+Ally Bank,121000358,+18326939542,VALID,ACTIVE,Money Market,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Lori,,Peterson,Lori Peterson
+Ally Bank,121000358,+13316461161,VALID,ACTIVE,Business Checking,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Hannah,,Foster,Hannah Foster
+Ally Bank,121000358,+16199312238,VALID,ACTIVE,Money Market,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Ernest,,Richardson,Ernest Richardson
+Ally Bank,121000358,+15407102807,VALID,ACTIVE,Business Checking,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Phillip,,Watson,Phillip Watson
+Ally Bank,121000358,+14423912787,VALID,ACTIVE,Savings,US,UT,Sandy,"200 West Civic Center Dr, Sandy, UT 84070",VALID,Amber,,Bell,Amber Bell

@@ -1,0 +1,4 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Bank of America,026009593,+16572033258,VALID,ACTIVE,CD,US,PA,Philadelphia,"1 S Broad St, Philadelphia, PA 19107",VALID,Randy,,Cook,Randy Cook
+Bank of America,026009593,+17027093209,VALID,ACTIVE,Money Market,US,PA,Philadelphia,"1 S Broad St, Philadelphia, PA 19107",VALID,David,Lee,Williams,David Lee Williams
+Bank of America,026009593,+14753271114,VALID,ACTIVE,Business Checking,US,PA,Philadelphia,"1 S Broad St, Philadelphia, PA 19107",VALID,Emily,,Hill,Emily Hill

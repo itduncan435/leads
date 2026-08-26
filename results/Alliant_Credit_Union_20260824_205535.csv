@@ -1,0 +1,3 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Alliant Credit Union,021407912,+15023963042,VALID,ACTIVE,Money Market,US,IL,Chicago,"11545 W Touhy Ave, Chicago, IL 60666",VALID,Steven,,Scott,Steven Scott
+Alliant Credit Union,021407912,+13154261151,VALID,ACTIVE,Savings,US,IL,Chicago,"11545 W Touhy Ave, Chicago, IL 60666",VALID,James,Mark,Lewis,James Mark Lewis

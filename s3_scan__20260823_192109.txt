@@ -1,0 +1,220 @@
+S3 Bucket Scan Results for example.com
+==================================================
+
+
+Private/Protected Buckets:
+
+Bucket: _archive
+URL: http://_archive.s3.amazonaws.com
+Status: Private/Protected
+Permissions: Error checking permissions: Unable to locate credentials
+
+Bucket: dev_
+URL: http://dev_.s3.amazonaws.com
+Status: Private/Protected
+Permissions: Error checking permissions: Unable to locate credentials
+
+Bucket: _backup
+URL: http://_backup.s3.amazonaws.com
+Status: Private/Protected
+Permissions: Error checking permissions: Unable to locate credentials
+
+Bucket: _assets
+URL: http://_assets.s3.amazonaws.com
+Status: Private/Protected
+Permissions: Error checking permissions: Unable to locate credentials
+
+Bucket: _backups
+URL: http://_backups.s3.amazonaws.com
+Status: Private/Protected
+Permissions: Error checking permissions: Unable to locate credentials
+
+Bucket: test-
+URL: http://test-.s3.amazonaws.com
+Status: Private/Protected
+Permissions: Error checking permissions: Unable to locate credentials
+
+Errors:
+
+Bucket: 
+Error: URL has an invalid label.
+
+Bucket: stage.
+Error: Failed to parse: 'stage..s3.amazonaws.com', label empty or too long
+
+Bucket: -private
+Error: HTTPConnectionPool(host='-private.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-private.s3.amazonaws.com', port=80): Failed to resolve '-private.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: .private
+Error: URL has an invalid label.
+
+Bucket: -test
+Error: HTTPConnectionPool(host='-test.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-test.s3.amazonaws.com', port=80): Failed to resolve '-test.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: -files
+Error: HTTPConnectionPool(host='-files.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-files.s3.amazonaws.com', port=80): Failed to resolve '-files.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: assets.
+Error: Failed to parse: 'assets..s3.amazonaws.com', label empty or too long
+
+Bucket: .prod
+Error: URL has an invalid label.
+
+Bucket: .staging
+Error: URL has an invalid label.
+
+Bucket: data.
+Error: Failed to parse: 'data..s3.amazonaws.com', label empty or too long
+
+Bucket: -prod
+Error: HTTPConnectionPool(host='-prod.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-prod.s3.amazonaws.com', port=80): Failed to resolve '-prod.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: .stage
+Error: URL has an invalid label.
+
+Bucket: dev.
+Error: Failed to parse: 'dev..s3.amazonaws.com', label empty or too long
+
+Bucket: -testing
+Error: HTTPConnectionPool(host='-testing.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-testing.s3.amazonaws.com', port=80): Failed to resolve '-testing.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: .static
+Error: URL has an invalid label.
+
+Bucket: backup.
+Error: Failed to parse: 'backup..s3.amazonaws.com', label empty or too long
+
+Bucket: .files
+Error: URL has an invalid label.
+
+Bucket: prod.
+Error: Failed to parse: 'prod..s3.amazonaws.com', label empty or too long
+
+Bucket: -media
+Error: HTTPConnectionPool(host='-media.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-media.s3.amazonaws.com', port=80): Failed to resolve '-media.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: .public
+Error: URL has an invalid label.
+
+Bucket: .media
+Error: URL has an invalid label.
+
+Bucket: static.
+Error: Failed to parse: 'static..s3.amazonaws.com', label empty or too long
+
+Bucket: .dev
+Error: URL has an invalid label.
+
+Bucket: .archive
+Error: URL has an invalid label.
+
+Bucket: -development
+Error: HTTPConnectionPool(host='-development.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-development.s3.amazonaws.com', port=80): Failed to resolve '-development.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: files.
+Error: Failed to parse: 'files..s3.amazonaws.com', label empty or too long
+
+Bucket: .development
+Error: URL has an invalid label.
+
+Bucket: testing.
+Error: Failed to parse: 'testing..s3.amazonaws.com', label empty or too long
+
+Bucket: -production
+Error: HTTPConnectionPool(host='-production.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-production.s3.amazonaws.com', port=80): Failed to resolve '-production.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: production.
+Error: Failed to parse: 'production..s3.amazonaws.com', label empty or too long
+
+Bucket: -public
+Error: HTTPConnectionPool(host='-public.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-public.s3.amazonaws.com', port=80): Failed to resolve '-public.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: test.
+Error: Failed to parse: 'test..s3.amazonaws.com', label empty or too long
+
+Bucket: .testing
+Error: URL has an invalid label.
+
+Bucket: -data
+Error: HTTPConnectionPool(host='-data.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-data.s3.amazonaws.com', port=80): Failed to resolve '-data.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: .test
+Error: URL has an invalid label.
+
+Bucket: .content
+Error: URL has an invalid label.
+
+Bucket: -static
+Error: HTTPConnectionPool(host='-static.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-static.s3.amazonaws.com', port=80): Failed to resolve '-static.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: -backup
+Error: HTTPConnectionPool(host='-backup.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-backup.s3.amazonaws.com', port=80): Failed to resolve '-backup.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: development.
+Error: Failed to parse: 'development..s3.amazonaws.com', label empty or too long
+
+Bucket: -uploads
+Error: HTTPConnectionPool(host='-uploads.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-uploads.s3.amazonaws.com', port=80): Failed to resolve '-uploads.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: -content
+Error: HTTPConnectionPool(host='-content.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-content.s3.amazonaws.com', port=80): Failed to resolve '-content.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: -assets
+Error: HTTPConnectionPool(host='-assets.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-assets.s3.amazonaws.com', port=80): Failed to resolve '-assets.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: -backups
+Error: HTTPConnectionPool(host='-backups.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-backups.s3.amazonaws.com', port=80): Failed to resolve '-backups.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: public.
+Error: Failed to parse: 'public..s3.amazonaws.com', label empty or too long
+
+Bucket: -stage
+Error: HTTPConnectionPool(host='-stage.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-stage.s3.amazonaws.com', port=80): Failed to resolve '-stage.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: .data
+Error: URL has an invalid label.
+
+Bucket: archive.
+Error: Failed to parse: 'archive..s3.amazonaws.com', label empty or too long
+
+Bucket: backups.
+Error: Failed to parse: 'backups..s3.amazonaws.com', label empty or too long
+
+Bucket: private.
+Error: Failed to parse: 'private..s3.amazonaws.com', label empty or too long
+
+Bucket: .uploads
+Error: URL has an invalid label.
+
+Bucket: -staging
+Error: HTTPConnectionPool(host='-staging.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-staging.s3.amazonaws.com', port=80): Failed to resolve '-staging.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: .production
+Error: URL has an invalid label.
+
+Bucket: -archive
+Error: HTTPConnectionPool(host='-archive.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-archive.s3.amazonaws.com', port=80): Failed to resolve '-archive.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: staging.
+Error: Failed to parse: 'staging..s3.amazonaws.com', label empty or too long
+
+Bucket: .assets
+Error: URL has an invalid label.
+
+Bucket: -dev
+Error: HTTPConnectionPool(host='-dev.s3.amazonaws.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError("HTTPConnection(host='-dev.s3.amazonaws.com', port=80): Failed to resolve '-dev.s3.amazonaws.com' ([Errno -2] Name or service not known)"))
+
+Bucket: content.
+Error: Failed to parse: 'content..s3.amazonaws.com', label empty or too long
+
+Bucket: .backup
+Error: URL has an invalid label.
+
+Bucket: uploads.
+Error: Failed to parse: 'uploads..s3.amazonaws.com', label empty or too long
+
+Bucket: .backups
+Error: URL has an invalid label.
+
+Bucket: media.
+Error: Failed to parse: 'media..s3.amazonaws.com', label empty or too long

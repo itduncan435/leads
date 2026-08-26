@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,account_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+12179843490,VALID,ACTIVE,Student Checking,US,FL,Miramar,"6860 Miramar Pkwy, Miramar, FL 33023",VALID,Gary,,Parker,Gary Parker
+JPMorgan Chase Bank,021000021,+13258579207,VALID,ACTIVE,Student Checking,US,FL,Miramar,"6860 Miramar Pkwy, Miramar, FL 33023",VALID,Adam,,Morgan,Adam Morgan
+JPMorgan Chase Bank,021000021,+15166076432,VALID,ACTIVE,Checking,US,FL,Miramar,"6860 Miramar Pkwy, Miramar, FL 33023",VALID,Diana,,Peterson,Diana Peterson
+JPMorgan Chase Bank,021000021,+17476315491,VALID,ACTIVE,CD,US,FL,Miramar,"6860 Miramar Pkwy, Miramar, FL 33023",VALID,Lori,,Wood,Lori Wood
+JPMorgan Chase Bank,021000021,+17068838730,VALID,ACTIVE,Business Checking,US,FL,Miramar,"6860 Miramar Pkwy, Miramar, FL 33023",VALID,Diana,,Bell,Diana Bell

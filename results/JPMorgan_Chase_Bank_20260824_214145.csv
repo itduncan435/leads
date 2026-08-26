@@ -1,0 +1,3 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+15414014098,VALID,ACTIVE,Business Checking,US,WA,Seattle,"1201 3rd Ave, Seattle, WA 98101",VALID,Gloria,,Gomez,Gloria Gomez
+JPMorgan Chase Bank,021000021,+12524733571,VALID,ACTIVE,Checking,US,WA,Seattle,"1201 3rd Ave, Seattle, WA 98101",VALID,Teresa,,Wood,Teresa Wood

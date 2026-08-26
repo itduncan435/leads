@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+12833643715,VALID,ACTIVE,Checking,US,NY,New York,"3 Times Square, New York, NY 10036",VALID,Marilyn,,Brooks,Marilyn Brooks
+JPMorgan Chase Bank,021000021,+19592228460,VALID,ACTIVE,Checking,US,OH,Columbus,"1111 Polaris Pkwy, Columbus, OH 43240",VALID,Richard,,Harris,Richard Harris
+JPMorgan Chase Bank,021000021,+17812801839,VALID,ACTIVE,Savings,US,MA,Boston,"200 Berkeley St, Boston, MA 02116",VALID,Jonathan,,Nguyen,Jonathan Nguyen
+JPMorgan Chase Bank,021000021,+19549952687,VALID,ACTIVE,CD,US,GA,Atlanta,"500 W Peachtree St NW, Atlanta, GA 30308",VALID,David,Paul,Thomas,David Paul Thomas
+JPMorgan Chase Bank,021000021,+17693106468,VALID,ACTIVE,Savings,US,FL,Miami,"150 SE 2nd Ave, Miami, FL 33131",VALID,Cynthia,,Torres,Cynthia Torres

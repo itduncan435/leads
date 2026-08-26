@@ -1,0 +1,35 @@
+# Sensitive files
+*.key
+*.secret
+*.session
+*.enc
+*.csv.enc
+*.txt.enc
+zi*
+users.json
+bank_accounts.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+spyhunt.log

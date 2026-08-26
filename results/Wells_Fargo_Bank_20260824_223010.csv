@@ -1,0 +1,6 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+Wells Fargo Bank,121042882,+12368865388,abbypichedeerbrook@gmail.com,VALID,ACTIVE,Checking,US,CA,San Francisco,"2300 16th St, San Francisco, CA 94103",VALID,Martin,,Cooper,Martin Cooper
+Wells Fargo Bank,121042882,+19408516833,davidsmith47@gmail.com,VALID,ACTIVE,Student Checking,US,CA,Los Angeles,"333 S Grand Ave, Los Angeles, CA 90071",VALID,Cynthia,,Torres,Cynthia Torres
+Wells Fargo Bank,121042882,+17036288558,youssefbasse.m_gfm@gemselearning.com,VALID,ACTIVE,Business Checking,US,CA,Los Angeles,"333 S Grand Ave, Los Angeles, CA 90071",VALID,Howard,,Howard,Howard Howard
+Wells Fargo Bank,121042882,+17706743681,dmgomez28@hotmail.com,VALID,PENDING,CD,US,CA,Los Angeles,"333 S Grand Ave, Los Angeles, CA 90071",VALID,Denise,,Brooks,Denise Brooks
+Wells Fargo Bank,121042882,+17143774314,marcellob.mb@eutelia.com,VALID,ACTIVE,CD,US,CA,Los Angeles,"333 S Grand Ave, Los Angeles, CA 90071",VALID,Russell,,Hughes,Russell Hughes

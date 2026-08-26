@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+15025486284,VALID,ACTIVE,Student Checking,US,TX,Houston,"600 Travis St, Houston, TX 77002",VALID,Eric,,Flores,Eric Flores
+JPMorgan Chase Bank,021000021,+14154636499,VALID,ACTIVE,Business Checking,US,AZ,Phoenix,"201 N Central Ave, Phoenix, AZ 85004",VALID,Howard,,Howard,Howard Howard
+JPMorgan Chase Bank,021000021,+15592888197,VALID,PENDING,Money Market,US,OH,Columbus,"1111 Polaris Pkwy, Columbus, OH 43240",VALID,Wendy,,Watson,Wendy Watson
+JPMorgan Chase Bank,021000021,+16073385361,VALID,CLOSED,Student Checking,US,CA,Los Angeles,"400 S Hope Plaza, Los Angeles, CA 90071",VALID,Erin,,Bailey,Erin Bailey
+JPMorgan Chase Bank,021000021,+17793012979,VALID,INVALID,Money Market,US,WA,Seattle,"1201 3rd Ave, Seattle, WA 98101",VALID,Ernest,,Howard,Ernest Howard

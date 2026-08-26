@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+16239048185,VALID,ACTIVE,Student Checking,US,TX,Houston,"600 Travis St, Houston, TX 77002",VALID,Joan,,Brooks,Joan Brooks
+JPMorgan Chase Bank,021000021,+16097069116,VALID,ACTIVE,Money Market,US,TX,Dallas,"2200 Ross Ave, Dallas, TX 75201",VALID,Howard,,Bailey,Howard Bailey
+JPMorgan Chase Bank,021000021,+18474839737,VALID,ACTIVE,CD,US,LA,New Orleans,"200 St Charles Ave, New Orleans, LA 70130",VALID,Eric,,Flores,Eric Flores
+JPMorgan Chase Bank,021000021,+19598406996,VALID,ACTIVE,Checking,US,FL,Miami,"150 SE 2nd Ave, Miami, FL 33131",VALID,Sarah,,Garcia,Sarah Garcia
+JPMorgan Chase Bank,021000021,+19095301680,VALID,ACTIVE,CD,US,MS,Jackson,"200 E Capitol St, Jackson, MS 39201",VALID,Bruce,,Cruz,Bruce Cruz

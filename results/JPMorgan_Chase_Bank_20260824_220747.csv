@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+12678169134,VALID,INVALID,Savings,US,NY,New York,"3 Times Square, New York, NY 10036",VALID,Joan,,Diaz,Joan Diaz
+JPMorgan Chase Bank,021000021,+18022884244,VALID,ACTIVE,Checking,US,AZ,Phoenix,"201 N Central Ave, Phoenix, AZ 85004",VALID,David,Michael,Walker,David Michael Walker
+JPMorgan Chase Bank,021000021,+17154043657,VALID,ACTIVE,Student Checking,US,MA,Boston,"200 Berkeley St, Boston, MA 02116",VALID,Jacqueline,,Cooper,Jacqueline Cooper
+JPMorgan Chase Bank,021000021,+19153281090,VALID,ACTIVE,Money Market,US,AZ,Phoenix,"201 N Central Ave, Phoenix, AZ 85004",VALID,Marilyn,,Cook,Marilyn Cook
+JPMorgan Chase Bank,021000021,+17042397117,VALID,ACTIVE,Money Market,US,NY,New York,"3 Times Square, New York, NY 10036",VALID,Raymond,,Kelly,Raymond Kelly

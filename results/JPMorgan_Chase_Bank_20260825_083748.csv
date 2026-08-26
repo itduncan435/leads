@@ -1,0 +1,3 @@
+bank,routing,phone,email,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+13236886468,fytlyfe@yahoo.com,VALID,ACTIVE,CD,US,FL,Miramar,"6860 Miramar Pkwy, Miramar, FL 33023",VALID,Rose,,Long,Rose Long
+JPMorgan Chase Bank,021000021,+18664684447,lisasmith21.tech@hotmail.com,VALID,ACTIVE,Checking,US,AZ,Phoenix,"201 N Central Ave, Phoenix, AZ 85004",VALID,Michael,Kevin,Walker,Michael Kevin Walker

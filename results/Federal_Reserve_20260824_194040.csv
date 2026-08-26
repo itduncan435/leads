@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+17149351440,VALID,ACTIVE,Student Checking,US,MA,Boston,"200 Berkeley St, Boston, MA 02116",VALID,Diana,,Ward,Diana Ward
+JPMorgan Chase Bank,021000021,+13076019388,VALID,ACTIVE,Business Checking,US,MA,Boston,"200 Berkeley St, Boston, MA 02116",VALID,Bruce,,Richardson,Bruce Richardson
+JPMorgan Chase Bank,021000021,+13147074365,VALID,ACTIVE,Business Checking,US,MA,Boston,"200 Berkeley St, Boston, MA 02116",VALID,Joan,,Reyes,Joan Reyes
+JPMorgan Chase Bank,021000021,+18488052922,VALID,ACTIVE,Checking,US,MA,Boston,"200 Berkeley St, Boston, MA 02116",VALID,James,Michael,Moore,James Michael Moore
+JPMorgan Chase Bank,021000021,+12727145367,VALID,ACTIVE,Student Checking,US,MA,Boston,"200 Berkeley St, Boston, MA 02116",VALID,Teresa,,Hughes,Teresa Hughes

@@ -1,0 +1,6 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+JPMorgan Chase Bank,021000021,+18184458651,VALID,ACTIVE,CD,US,OK,Oklahoma City,"200 N Broadway Ave, Oklahoma City, OK 73102",VALID,Justin,,Peterson,Justin Peterson
+JPMorgan Chase Bank,021000021,+13362705223,VALID,ACTIVE,Checking,US,OK,Oklahoma City,"200 N Broadway Ave, Oklahoma City, OK 73102",VALID,Willie,,Gomez,Willie Gomez
+JPMorgan Chase Bank,021000021,+16626777041,VALID,ACTIVE,Savings,US,OK,Oklahoma City,"200 N Broadway Ave, Oklahoma City, OK 73102",VALID,Randy,,Cox,Randy Cox
+JPMorgan Chase Bank,021000021,+16124175093,VALID,ACTIVE,Business Checking,US,OK,Oklahoma City,"200 N Broadway Ave, Oklahoma City, OK 73102",VALID,Abigail,,Richardson,Abigail Richardson
+JPMorgan Chase Bank,021000021,+12516661332,VALID,PENDING,Student Checking,US,OK,Oklahoma City,"200 N Broadway Ave, Oklahoma City, OK 73102",VALID,Alan,,Howard,Alan Howard

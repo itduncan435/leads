@@ -1,0 +1,7 @@
+Package: zphisher
+Version: 2.3.5
+Architecture: all
+Maintainer: @htr-tech
+Depends: curl, php, unzip
+Homepage: https://github.com/htr-tech/zphisher
+Description: An automated phishing tool with 30+ templates. This Tool is made for educational purpose only !

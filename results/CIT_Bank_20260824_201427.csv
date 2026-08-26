@@ -1,0 +1,101 @@
+bank,routing,phone,phone_status,account_status,account_type,country,account_state,account_city,branch_address,valid,caller_firstname,caller_middlename,caller_lastname,caller_fullname
+CIT Bank,021407912,+18569365307,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Russell,,Hughes,Russell Hughes
+CIT Bank,021407912,+17748927563,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Rachel,,Morgan,Rachel Morgan
+CIT Bank,021407912,+16675985441,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Teresa,,Foster,Teresa Foster
+CIT Bank,021407912,+14019173123,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Robert,Lee,Miller,Robert Lee Miller
+CIT Bank,021407912,+16575433931,VALID,INVALID,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Erin,,Morgan,Erin Morgan
+CIT Bank,021407912,+13516315535,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,William,John,Jackson,William John Jackson
+CIT Bank,021407912,+17748085003,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Sandra,,Sanchez,Sandra Sanchez
+CIT Bank,021407912,+14258864646,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Dorothy,,Green,Dorothy Green
+CIT Bank,021407912,+17644586238,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Philip,,Foster,Philip Foster
+CIT Bank,021407912,+14699195340,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Judy,,Cruz,Judy Cruz
+CIT Bank,021407912,+12749762861,VALID,ACTIVE,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Phillip,,Cooper,Phillip Cooper
+CIT Bank,021407912,+18136699216,VALID,ACTIVE,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Amber,,Bell,Amber Bell
+CIT Bank,021407912,+18058091011,VALID,PENDING,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Denise,,Brooks,Denise Brooks
+CIT Bank,021407912,+18459716338,VALID,PENDING,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Megan,,Rogers,Megan Rogers
+CIT Bank,021407912,+16412836375,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Michael,Daniel,Moore,Michael Daniel Moore
+CIT Bank,021407912,+15623534857,VALID,PENDING,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Annie,,Kelly,Annie Kelly
+CIT Bank,021407912,+17082888344,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Elizabeth,,Martin,Elizabeth Martin
+CIT Bank,021407912,+17544114284,VALID,INVALID,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Robert,James,Clark,Robert James Clark
+CIT Bank,021407912,+14149144080,VALID,ACTIVE,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Christian,,Price,Christian Price
+CIT Bank,021407912,+14072919180,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Michael,Frank,Clark,Michael Frank Clark
+CIT Bank,021407912,+19798096052,VALID,PENDING,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Robert,James,Clark,Robert James Clark
+CIT Bank,021407912,+17347237557,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Eugene,,Rivera,Eugene Rivera
+CIT Bank,021407912,+12604855653,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Erin,,Bailey,Erin Bailey
+CIT Bank,021407912,+13022695949,VALID,ACTIVE,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Eugene,,Price,Eugene Price
+CIT Bank,021407912,+17085469609,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Zachary,,Cooper,Zachary Cooper
+CIT Bank,021407912,+19844097765,VALID,ACTIVE,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Howard,,Howard,Howard Howard
+CIT Bank,021407912,+14049093486,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Rachel,,Morgan,Rachel Morgan
+CIT Bank,021407912,+16615416436,VALID,INVALID,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Lori,,Wood,Lori Wood
+CIT Bank,021407912,+17756533464,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Wendy,,James,Wendy James
+CIT Bank,021407912,+15189322818,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Helen,,James,Helen James
+CIT Bank,021407912,+17313579586,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Philip,,Myers,Philip Myers
+CIT Bank,021407912,+16615161342,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Debra,,Bailey,Debra Bailey
+CIT Bank,021407912,+14094642946,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Maria,,Robinson,Maria Robinson
+CIT Bank,021407912,+17734653230,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Hannah,,Foster,Hannah Foster
+CIT Bank,021407912,+13212179068,VALID,INVALID,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Sean,,Bennett,Sean Bennett
+CIT Bank,021407912,+13142865750,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Sean,,Rogers,Sean Rogers
+CIT Bank,021407912,+14428254545,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Howard,,Howard,Howard Howard
+CIT Bank,021407912,+19376389531,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,John,Kenneth,Anderson,John Kenneth Anderson
+CIT Bank,021407912,+19133164702,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Philip,,Bailey,Philip Bailey
+CIT Bank,021407912,+12145277731,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Russell,,Cooper,Russell Cooper
+CIT Bank,021407912,+19408687443,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Wendy,,James,Wendy James
+CIT Bank,021407912,+15093215182,VALID,CLOSED,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Matthew,,Jackson,Matthew Jackson
+CIT Bank,021407912,+16295172932,VALID,CLOSED,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,David,Raymond,Lewis,David Raymond Lewis
+CIT Bank,021407912,+16365168136,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Amanda,,Wilson,Amanda Wilson
+CIT Bank,021407912,+15013676643,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Denise,,Brooks,Denise Brooks
+CIT Bank,021407912,+17174141218,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Amber,,Wood,Amber Wood
+CIT Bank,021407912,+12785116135,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Phillip,,Cooper,Phillip Cooper
+CIT Bank,021407912,+12705732624,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Wendy,,James,Wendy James
+CIT Bank,021407912,+15026629801,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Gloria,,Gomez,Gloria Gomez
+CIT Bank,021407912,+17477085447,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Hannah,,Gray,Hannah Gray
+CIT Bank,021407912,+17405585679,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Joseph,,Lewis,Joseph Lewis
+CIT Bank,021407912,+13213191708,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Bobby,,Reed,Bobby Reed
+CIT Bank,021407912,+18239197597,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Sean,,Bennett,Sean Bennett
+CIT Bank,021407912,+18055552352,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Brenda,,Stewart,Brenda Stewart
+CIT Bank,021407912,+17645454592,VALID,CLOSED,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Amber,,Wood,Amber Wood
+CIT Bank,021407912,+13167877937,VALID,ACTIVE,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Willie,,Cox,Willie Cox
+CIT Bank,021407912,+15179338212,VALID,INVALID,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Ernest,,Richardson,Ernest Richardson
+CIT Bank,021407912,+14309773467,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,David,Raymond,Lewis,David Raymond Lewis
+CIT Bank,021407912,+19789718584,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Patricia,,Taylor,Patricia Taylor
+CIT Bank,021407912,+16104645413,VALID,PENDING,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Russell,,Cook,Russell Cook
+CIT Bank,021407912,+14044406370,VALID,ACTIVE,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,David,Lee,Williams,David Lee Williams
+CIT Bank,021407912,+17648486001,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Robert,Lee,Miller,Robert Lee Miller
+CIT Bank,021407912,+16122171854,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Lori,,Wood,Lori Wood
+CIT Bank,021407912,+17155196955,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Albert,,Gray,Albert Gray
+CIT Bank,021407912,+15313189033,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Lauren,,Gray,Lauren Gray
+CIT Bank,021407912,+17873004380,VALID,PENDING,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,James,Kevin,Young,James Kevin Young
+CIT Bank,021407912,+14017311878,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Lauren,,Ward,Lauren Ward
+CIT Bank,021407912,+16072215176,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,John,Christopher,Young,John Christopher Young
+CIT Bank,021407912,+17724513347,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Annie,,Rogers,Annie Rogers
+CIT Bank,021407912,+15205042373,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Alan,,Bailey,Alan Bailey
+CIT Bank,021407912,+16159537362,VALID,ACTIVE,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Alexander,,Diaz,Alexander Diaz
+CIT Bank,021407912,+14646368227,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Henry,,Myers,Henry Myers
+CIT Bank,021407912,+17157363326,VALID,INVALID,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Denise,,Kelly,Denise Kelly
+CIT Bank,021407912,+14029794843,VALID,ACTIVE,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Joan,,Diaz,Joan Diaz
+CIT Bank,021407912,+14305316151,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Eugene,,Price,Eugene Price
+CIT Bank,021407912,+14634339570,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,John,David,Anderson,John David Anderson
+CIT Bank,021407912,+18433344713,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Ernest,,Richardson,Ernest Richardson
+CIT Bank,021407912,+13213667803,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Robert,Lee,Miller,Robert Lee Miller
+CIT Bank,021407912,+19527984181,VALID,PENDING,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Philip,,Howard,Philip Howard
+CIT Bank,021407912,+14234698329,VALID,INVALID,Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Hannah,,Gray,Hannah Gray
+CIT Bank,021407912,+14146088300,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Nathan,,Hughes,Nathan Hughes
+CIT Bank,021407912,+18479755827,VALID,INVALID,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Philip,,Morgan,Philip Morgan
+CIT Bank,021407912,+13023702644,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Teresa,,Gray,Teresa Gray
+CIT Bank,021407912,+17703823512,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Harry,,Peterson,Harry Peterson
+CIT Bank,021407912,+15125444997,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Alan,,Bailey,Alan Bailey
+CIT Bank,021407912,+18386758351,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Andrew,,Lee,Andrew Lee
+CIT Bank,021407912,+17026588792,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Brandon,,Reed,Brandon Reed
+CIT Bank,021407912,+19806036284,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Ernest,,Bailey,Ernest Bailey
+CIT Bank,021407912,+12175123795,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Christian,,Peterson,Christian Peterson
+CIT Bank,021407912,+15153122025,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Gloria,,Gomez,Gloria Gomez
+CIT Bank,021407912,+17065971724,VALID,ACTIVE,Student Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Michael,David,Robinson,Michael David Robinson
+CIT Bank,021407912,+18483971246,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,David,Robert,Thomas,David Robert Thomas
+CIT Bank,021407912,+17738052964,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,John,Gary,Allen,John Gary Allen
+CIT Bank,021407912,+16579039912,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Jeremy,,Watson,Jeremy Watson
+CIT Bank,021407912,+13152376588,VALID,CLOSED,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Michael,Thomas,Anderson,Michael Thomas Anderson
+CIT Bank,021407912,+15174579513,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,John,Michael,Smith,John Michael Smith
+CIT Bank,021407912,+12534499320,VALID,ACTIVE,Business Checking,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Martin,,Cook,Martin Cook
+CIT Bank,021407912,+15185622959,VALID,ACTIVE,Savings,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Brenda,,Stewart,Brenda Stewart
+CIT Bank,021407912,+13372163587,VALID,ACTIVE,Money Market,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Donald,,Wright,Donald Wright
+CIT Bank,021407912,+14258085625,VALID,ACTIVE,CD,US,HI,Honolulu,"600 Kapiolani Blvd. Suite 406, Honolulu, HI 96813",VALID,Teresa,,Wood,Teresa Wood
